@@ -1,0 +1,79 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+view-product
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+<div class="container-fluid">
+
+    <div class="container-fluid">
+        <a href="{% url 'add_variant' var.product.id %}" class="btn btn-primary">Add variant</a>
+      </div>
+
+  <br>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">Product details</h5>
+          <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Image</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Disable</th>
+                  <th scope="col">Edit</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {% for variant in variants %}
+                <tr>
+                  <th scope="row">{{ variant.id }}</th>
+                  <td>{{ variant.product }}</td>
+                  <td><img src="{{ variant.display_image.url }}" style="width:50px;height:70px;" alt=""></td>
+                  <td>{{ variant.size }}</td>
+                  <td>{{ variant.price }}</td>
+                  <td>{{ variant.stock }}</td>
+                  {% if variant.is_active %}
+                  <td>
+                    {% if variant.product.is_active %}
+                    <div >
+                        <a href="{% url 'disable_variant' variant.id %}" class="btn btn-danger">Disable</a>
+                    </div>
+                    {% else %}
+                    <div>
+                        <a href="{% url 'enable_variant' variant.id %}" class="btn btn-success">Enable</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  {% else %}
+                  <td>
+                    <div>
+                        <a href="{% url 'enable_variant' variant.id %}" class="btn btn-success">Enable</a>
+                    </div>
+                  </td>
+                  {% endif %}
+                  <td>
+                    <div >
+                        <a href="" class="btn btn-primary">Edit</a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+     </div>
+
+
+{% endblock %}  

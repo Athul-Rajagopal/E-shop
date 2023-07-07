@@ -4,14 +4,16 @@
 home
 {% endblock %}
 {% block user %}
-<a href="" class="btn border">
-                    <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
-                    <span class="badge">{{user}}</span>
+{% if request.user.is_authenticated %}
+    <a href="" class="btn border">
+                        <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
+                        <span class="badge">{{user}}</span>
 
 
 
-                    <!-- <i class="fas fa-shopping-cart text-primary"></i> -->
-                </a>
+                        <!-- <i class="fas fa-shopping-cart text-primary"></i> -->
+                    </a>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -31,7 +33,7 @@ home
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="{% url 'shop' 'formals' %}" class="nav-item nav-link">Shop</a>
+                            <a href="{% url 'shop' 'formal-shirt' %}" class="nav-item nav-link">Shop</a>
                             <!-- <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -134,9 +136,9 @@ home
                 <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
                     <p class="text-right">15 Products</p>
                     <a href="{% url 'shop' category.slug%}" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="{{ category.category_image.url }}" alt="{{ category.category_name }}">
+                        <img class="img-fluid" src="{{ category.image.url }}" alt="{{ category.name }}">
                     </a>
-                    <h5 class="font-weight-semi-bold m-0">{{ category.category_name }}</h5>
+                    <h5 class="font-weight-semi-bold m-0">{{ category.name }}</h5>
                 </div>
             </div>
             {% if forloop.counter|divisibleby:3 and not forloop.last %}

@@ -175,4 +175,4 @@ def home(request):
 
 def signout(request):
     logout(request)
-    return render(request, 'homepage/home.html')
+    return redirect('home')

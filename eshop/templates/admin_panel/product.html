@@ -1,0 +1,86 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+home
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+<div class="container-fluid">
+
+    <div class="container-fluid">
+        <a href="{% url 'add_product' %}" class="btn btn-primary">Add products</a>
+      </div>
+
+  <br>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">Product details</h5>
+          <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Created at </th>
+                  <th scope="col">Updated at</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Brand</th>
+                  <th scope="col">Availability</th>
+                  <th scope="col">view</th>
+                  <th scope="col">Disable</th>
+                  <th scope="col">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                <tr>
+                  <th scope="row">{{ product.id }}</th>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.created_at }}</td>
+                  <td>{{ product.updated_at }}</td>
+                  <td>{{ product.category }}</td>
+                  <td>{{ product.brandName }}</td>
+                  {% if product.is_active %}
+                  <td>Available</td>
+                  {% else %}
+                  <td>Not Available</td>
+                  {% endif %}
+
+                  <td>
+                    <div >
+                        <a href="{% url 'view_product' product.id %}" class="btn btn-primary">View</a>
+                    </div>
+                  </td>
+                 {% if product.is_active %}
+                  <td>
+                    <div >
+                        <a href="{% url 'disable_product' product.id %}" class="btn btn-danger">Disable</a>
+                    </div>
+                  </td>
+                  {% else %}
+                  <td>
+                    <div >
+                        <a href="{% url 'enable_product' product.id %}" class="btn btn-primary">Enable</a>
+                    </div>
+                  </td>
+                  {% endif %}
+                  <td>
+                    <div >
+                        <a href="" class="btn btn-primary">Edit</a>
+                    </div>
+                  </td>
+
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+     </div>
+
+
+{% endblock %}  

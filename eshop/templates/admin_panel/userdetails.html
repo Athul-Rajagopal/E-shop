@@ -1,0 +1,58 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+users
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+
+      <!--  Header End -->
+      <div class="container-fluid">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">USER TABLE</h5>
+              <table class="table table-striped mt-2">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Active</th>
+                    <th scope="col">Admin</th>
+                    <th scope="col">Status</th>
+<!--                    <th scope="col">Unblock</th>-->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in users %}
+                  <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{ user.username}}</td>
+                    <td>{{user.email}}</td>   
+                    <td>{{ user.is_active }}</td>
+                    <td>{{ user.is_superuser}}</td>
+                    {% if user.is_active %}
+                    <td>
+                        <a class="btn btn-danger" href="block-user/{{user.id}}">BLOCK</a>
+          
+                      </td>
+                    {% else %}
+                      <td>
+                        <a href="unblock-user/{{user.id}}" class="text-center btn btn-success btn-sm">UNBLOCK</a>
+                      </td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}       
