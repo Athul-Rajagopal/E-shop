@@ -20,7 +20,7 @@ category
               <tr>
                 <th scope="col">no.</th>
                 <th scope="col">Category</th>
-<!--                <th scope="col">Edit</th>-->
+                <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
               </tr>
             </thead>
@@ -29,12 +29,18 @@ category
               <tr>
                 <th scope="row">{{category.id}}</th>
                 <td>{{category.name}}</td>
-<!--                <td>-->
-<!--                  <a href="edit_category/{{category.id}}" class="text-center btn btn-warning btn-sm">EDIT</a>-->
-<!--                </td>-->
                 <td>
-                  <a href="dlt-category/{{category.id}}" class="text-center btn btn-danger btn-sm">DELETE</a>
+                  <a href="{% url 'edit_category' category.id %}" class="text-center btn btn-warning btn-sm">EDIT</a>
                 </td>
+                {% if category.is_active %}
+                <td>
+                  <a href="disable-category/{{category.id}}" class="text-center btn btn-danger btn-sm">Disable</a>
+                </td>
+                {% else %}
+                <td>
+                  <a href="enable-category/{{category.id}}" class="text-center btn btn-primary btn-sm">Enable</a>
+                </td>
+                {% endif %}
               </tr>
             {% endfor %}
             </tbody>

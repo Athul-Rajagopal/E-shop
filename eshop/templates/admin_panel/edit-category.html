@@ -1,0 +1,42 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+category
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+<div class="container-fluid">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">EDIT CATEGOREY</h5>
+          <div class="card">
+            <div class="card-body">
+              <form action="{% url 'edit_category' category.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Category name</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="category_name", value="{{category.name}}">
+                  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Image</label>
+                  <img src="{{ category.image.url }}" alt="Image" style="height:50px;width:50px;">
+                  <input type="file" class="form-control" id="exampleInputPassword1" name="image" value="{{category.image}}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
