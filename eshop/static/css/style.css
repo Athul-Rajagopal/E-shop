@@ -9589,3 +9589,33 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+
+
+.address-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+}
+
+.address-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.address-card p {
+  margin: 5px 0;
+}
+
+.address-card .name {
+  font-weight: bold;
+}
+
+.address-card .address {
+  font-style: italic;
+}
+
+.address-card .zipcode {
+  margin-bottom: 0;
+}
+

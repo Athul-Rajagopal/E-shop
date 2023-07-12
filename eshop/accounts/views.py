@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
@@ -125,7 +126,7 @@ def activate(request, uidb64, token):
     if my_user is not None and account_activation_token.check_token(my_user, token):
         my_user.is_active = True
         my_user.save()
-        login(request, my_user)
+        # login(request, my_user)
         return redirect('signin')
     else:
         return render(request, 'accounts/activation_failed.html')
@@ -157,10 +158,9 @@ def otp_login(request):
                 request.session['user_id'] = None
                 request.session['otp_expiration_time'] = None
                 messages.error(request, 'OTP has expired. Please request a new one.')
-                return redirect('otplogin')
+                return redirect('signin')
 
-
-        elif request.user.is_authenticated:
+        else:
             # OTP is invalid, display an error message
             messages.error(request, 'Invalid OTP')
 
@@ -176,3 +176,94 @@ def home(request):
 def signout(request):
     logout(request)
     return redirect('home')
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+
+        user = User.objects.get(username=username)
+        if email == user.email:
+            # Generate OTP secret
+            otp_secret = pyotp.random_base32()
+
+            # Create a PyOTP object
+            totp = pyotp.TOTP(otp_secret)
+
+            # Get the current OTP
+            otp = totp.now()
+
+            # setting timer
+            expiration_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
+
+            # Store OTP in the session
+            session = SessionStore(request.session.session_key)
+            request.session['otp'] = otp
+            request.session['user_id'] = user.id
+            request.session['otp_expiration_time'] = expiration_time.timestamp()
+
+            # Compose the email content
+            subject = 'OTP verification'
+            message = f'Hello {user.username},\n\n' \
+                      f'Please use the following OTP to reset your password: {otp}\n\n' \
+                      f'Thank you!'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+
+            # Send the email
+            send_mail(subject, message, from_email, recipient_list)
+
+            return redirect('otp_forgot_password')
+
+    return render(request, 'accounts/forgot-password.html')
+
+
+def otp_forgot_password(request):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        # Retrieve OTP from session
+        session_otp = request.session.get('otp')
+        user_id = request.session.get('user_id')
+        expiration_time = request.session.get('otp_expiration_time')
+        if session_otp == otp:
+            if datetime.datetime.now().timestamp() < expiration_time:
+
+                # Clear OTP from session
+                request.session['otp'] = None
+
+                return render(request, 'accounts/reset-password.html')
+
+            else:
+                # expired otp
+                request.session['otp'] = None
+                request.session['user_id'] = None
+                request.session['otp_expiration_time'] = None
+                messages.error(request, 'OTP has expired. Please request a new one.')
+                return redirect('otplogin')
+
+        elif request.user.is_active:
+            # OTP is invalid, display an error message
+            messages.error(request, 'Invalid OTP')
+
+    # OTP verification not completed or authentication failed
+    messages.success(request, "We have sent an OTP to your email.")
+    return render(request, 'accounts/otp-forgot-password.html')
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        user_id = request.session.get('user_id')
+        request.session['user_id'] = None
+        if password1 == password2:
+            user = User.objects.get(id=user_id)
+            user.password = make_password(password2)
+            user.save()
+            return redirect('signin')
+        else:
+            messages.error(request, 'Password does not match.')
+            return redirect('reset_password')
+
+    render(request, 'accounts/reset-password.html')

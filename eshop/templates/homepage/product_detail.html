@@ -5,6 +5,8 @@ home
 {% endblock %}
 {% block link %}
 <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <style type="text/css">
     body {
         background-color: #fafafa;
@@ -19,14 +21,6 @@ home
         height: 550px;
     }
 
-    img[data-large] {
-        cursor: pointer;
-    }
-
-    img[data-large]:hover {
-        transform: scale(2.5);
-        transition: transform 0.3s ease-in-out;
-    }
 </style>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="{% static 'js/jquery.imgzoom.js' %}"></script>
@@ -34,7 +28,7 @@ home
 
 {% block user %}
 {% if request.user.is_authenticated %}
-    <a href="" class="btn border">
+    <a href="{% url 'user_profile' %}" class="btn border">
                         <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
                         <span class="badge">{{user}}</span>
 
@@ -109,9 +103,8 @@ home
                         {% for image in images %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                                 <div class="imgBox">
-                                    <!-- Add a wrapper div for the zoom effect -->
-                                    <div class="zoom-overlay"></div>
-                                    <img class="img-fluid" src="{{ image.display_image.url }}" alt="Image">
+                                    <div class="zoom"></div>
+                                    <img id="variantImage" class="img-fluid zoom" src="{{ image.display_image.url }}" alt="Image">
                                 </div>
                             </div>
                         {% endfor %}
@@ -159,11 +152,13 @@ home
                 </form>
             </div>
 
-                <div class="d-flex align-items-center mb-4 pt-2">
-
-
-                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To
-                        Cart</button>
+               <div class="d-flex align-items-center mb-4 pt-2">
+                    <a href="{% url 'add_to_cart' variants.id %}">
+                        <button class="btn btn-primary px-3 mr-1"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                    </a>
+                    <a href="{% url 'add_to_wishlist' variants.id %}">
+                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Wishlist</button>
+                    </a>
                 </div>
 
             </div>
@@ -242,17 +237,19 @@ home
     <!-- Shop Detail End -->
 
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
+
+
 <script>
-    function updateVariant(price, imageUrl) {
-        document.getElementById('variantPrice').textContent = price;
-        document.getElementById('variantImage').src = imageUrl;
-    }
-</script>
-<script>
-    // Initialize the Image Zoom plugin
-    $(document).ready(function() {
-        $('.imgBox').imgZoom();
+  $(document).ready(function() {
+    $('.zoom').elevateZoom({
+      zoomWindowWidth: 300,
+      zoomWindowHeight: 200
     });
+  });
 </script>
 {% endblock %}
 

@@ -84,17 +84,17 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
+                <a href="{% url 'wishlist' %}" class="btn border">
                     <i class="fa fa-heart" aria-hidden="true" style="color: #F1B709;"></i>
 
                     <!-- <i class="fas fa-heart text-primary"></i> -->
-                    <span class="badge">0</span>
+<!--                    <span class="badge">0</span>-->
                 </a>
-                <a href="/cart" class="btn border">
+                <a href="{% url 'cart' %}" class="btn border">
                     <i class="fa fa-shopping-cart" aria-hidden="true" style="color: #F1B709;"></i>
 
 
-                    <span class="badge">0</span>
+<!--                    <span class="badge">0</span>-->
                 </a>
                 {% block user %}
 
@@ -120,18 +120,7 @@
             </div>
             <div class="col-lg-8 col-md-12">
                 <div class="row">
-                    <div class="col-md-4 mb-5">
-                        <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                            <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
-                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
-                            <a class="text-dark mb-2" href="checkout.html"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
-                            <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-5">
+                    <div class="col-md-6 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>

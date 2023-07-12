@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ProductTable, CategoryTable, Size, ProductVariant, Brands, VariantImage
+from .models import ProductTable, CategoryTable, Size, ProductVariant, Brands, VariantImage,State,UserAddress
 
 # Register your models here.
 admin.site.register(CategoryTable)
@@ -8,3 +8,5 @@ admin.site.register(ProductVariant)
 admin.site.register(Size)
 admin.site.register(Brands)
 admin.site.register(VariantImage)
+admin.site.register(State)
+admin.site.register(UserAddress)

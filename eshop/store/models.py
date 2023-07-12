@@ -1,6 +1,11 @@
+
+
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
+from django.contrib.auth.models import  User
+from phone_field import PhoneField
 
 
 # Create your models here.
@@ -83,3 +88,28 @@ class VariantImage(models.Model):
 
     def __str__(self):
         return self.product_variant.product.name
+
+
+
+
+## user profile
+
+class State(models.Model):
+    state = models.CharField(max_length=50)
+    def __str__(self):
+        return self.state
+class UserAddress(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50,null=True)
+    phone = models.CharField(max_length=15,blank=True)
+    area = models.TextField()
+    house_name = models.TextField()
+    city = models.CharField()
+    state = models.ForeignKey(State,on_delete=models.CASCADE)
+    pincode = models.CharField()
+
+    def __str__(self):
+        return f"{self.user_id.username}"
+
+

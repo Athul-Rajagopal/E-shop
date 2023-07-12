@@ -5,7 +5,7 @@ home
 {% endblock %}
 {% block user %}
 {% if request.user.is_authenticated %}
-    <a href="" class="btn border">
+    <a href="{% url 'user_profile' %}" class="btn border">
                         <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
                         <span class="badge">{{user}}</span>
 

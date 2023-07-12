@@ -307,12 +307,13 @@ def edit_variant(request, variant_id):
             variant.size = size_id
             variant.price = price
             variant.display_image = variant_image
-            # variant.save()
-            VariantImage.objects.filter(product_variant=variant).delete()
+            variant.save()
+            if variant_images:
+                VariantImage.objects.filter(product_variant=variant).delete()
 
-            for image in variant_images:
-                variant_image = VariantImage.objects.create(product_variant=variant, display_image=image)
-                variant_image.save()
+                for image in variant_images:
+                    variant_image = VariantImage.objects.create(product_variant=variant, display_image=image)
+                    variant_image.save()
 
             return redirect('products')
 
