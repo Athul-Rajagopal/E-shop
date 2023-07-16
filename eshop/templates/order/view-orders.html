@@ -1,49 +1,7 @@
 {% extends 'homepage/base.html' %}
 {% load static %}
 {% block title %}
-home
-{% endblock %}
-{% block link %}
-<style>
-  .address-card {
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 5px;
-    width: 100%;
-  }
-
-  .address-card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  .address-card p {
-    margin: 5px 0;
-  }
-
-  .address-card .name {
-    font-weight: bold;
-  }
-
-  .address-card .address {
-    font-style: italic;
-  }
-
-  .address-card .zipcode {
-    margin-bottom: 0;
-  }
-
-  .add-address-button {
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  .address-container {
-    max-height: 500px;
-    overflow-y: auto;
-  }
-</style>
+orders
 {% endblock %}
 
 {% block content %}
@@ -55,17 +13,18 @@ home
           <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
             <li class="breadcrumb-item"><a href="user-profile">User</a></li>
-            <li class="breadcrumb-item active" aria-current="page">User Address</li>
+            <li class="breadcrumb-item active" aria-current="page">Orders</li>
           </ol>
         </nav>
       </div>
     </div>
+
     <div class="row">
       <div class="col-lg-4">
+        <!-- Side Bar Content -->
         <div class="card mb-4">
           <div class="card-body text-center">
-            <img src="{% static 'image/user.png' %}" alt="avatar"
-              class="rounded-circle img-fluid" style="width: 150px;">
+            <img src="{% static 'image/user.png' %}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
             <h5 class="my-3">{{ request.user }}</h5>
           </div>
         </div>
@@ -92,35 +51,50 @@ home
           </div>
         </div>
       </div>
+      <div class="col-lg-8">
+        <!-- Order Table -->
+        <div class="table-responsive mb-5">
+          <table class="table table-light table-borderless table-hover text-center mb-0">
+            <thead class="thead-dark">
+              <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Delivery Date</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>view</th>
+                <th>Cancel</th>
+              </tr>
+            </thead>
+            <tbody class="align-middle">
+              {% for order in orders %}
+              <tr>
+                <td class="align-middle">{{ order.id }}</td>
+                <td class="align-middle">{{ order.order_date }}</td>
+                <td class="align-middle">{{ order.delivery_date }}</td>
+                <td class="align-middle">{{ order.total_price }}</td>
+                <td class="align-middle">{{ order.payment_status }}</td>
+                  <td class="align-middle">
+                  <a href="{% url 'order_details' order.id %}">
+                    <button class="btn btn-sm btn-success">view</button>
+                  </a>
+                </td>
+                <td class="align-middle">
+                    {% if order.payment_status == 'PENDING' %}
+                  <a href="{% url 'cancel_order' order.id %}">
+                    <button class="btn btn-sm btn-danger">Cancel</button>
+                  </a>
+                    {% else %}
+                    <p > Delivered</p>
 
-      <div class="col-lg-4 address-container">
-        {% for details in details %}
-        <div class="address-card">
-          <h3>Address {{details.id}}</h3>
-          <p class="name">{{details.first_name}} {{details.last_name}}</p>
-          <p class="address">{{details.house_name}}</p>
-          <p class="city">{{details.area}}</p>
-          <p class="state">{{details.city}}</p>
-          <p class="country">{{details.state}}</p>
-          <p class="zipcode">{{details.pincode}}</p>
-          <div class="add-address-button">
-            <a href="{% url 'edit_address' details.id %}">
-              <button class="btn btn-primary btn-sm">EDIT</button>
-            </a>
-            <a href="{% url 'delete_address' details.id %}">
-              <button class="btn btn-danger btn-sm">delete</button>
-            </a>
-          </div>
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        {% endfor %}
       </div>
-
-      <div class="col-lg-4 add-address-button">
-        <a href="{% url 'add_user_address' %}">
-          <button class="btn btn-primary btn-sm">Add Address</button>
-        </a>
-      </div>
-
     </div>
   </div>
 </section>

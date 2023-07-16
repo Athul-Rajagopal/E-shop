@@ -46,7 +46,7 @@ home
               </li>
               <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
                 <i style="color: #ac2bac;"></i>
-                <p class="mb-0" style="color:black;">Orders</p>
+                <a href="{% url 'view_orders' %}" style="color:black;"><p class="mb-0">orders</p></a>
               </li>
 
             </ul>
@@ -58,7 +58,7 @@ home
           <div class="card-body">
             <div class="row">
               <div class="col-sm-3">
-                <p class="mb-0">Full Name</p>
+                <p class="mb-0">User Name</p>
               </div>
               <div class="col-sm-9">
                 <p class="text-muted mb-0">{{details.first_name}}</p>
@@ -94,6 +94,9 @@ home
                 <p class="text-muted mb-0">{{details.state}}</p>
                 <p class="text-muted mb-0">{{details.pincode}}</p>
               </div>
+              <a href="{% url 'change_user_password' %}">
+                <button class="btn btn-primary btn-sm">Change password</button>
+              </a>
             </div>
           </div>
         </div>

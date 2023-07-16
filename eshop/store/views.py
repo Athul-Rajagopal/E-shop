@@ -1,6 +1,9 @@
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import CategoryTable, ProductTable, ProductVariant, VariantImage, Size, Brands, UserAddress, State
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -143,3 +146,27 @@ def delete_address(request, address_id):
     if request.user.is_authenticated:
         UserAddress.objects.get(id=address_id).delete()
         return redirect('user_address')
+
+
+# change password
+def change_user_password(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            old_password = request.POST.get('password')
+            new_password = request.POST.get('password1')
+            confirm_new_password = request.POST.get('password2')
+            user = request.user
+
+            if user.check_password(old_password) and new_password == confirm_new_password:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password changed successfully')
+                return redirect('signin')
+
+            else:
+                messages.error(request, 'Password does not match or invalid input')
+
+        return render(request, 'homepage/change-password.html')
+
+    else:
+        return redirect('signin')

@@ -5,7 +5,7 @@ home
 {% endblock %}
 {% block user %}
 {% if request.user.is_authenticated %}
-    <a href="" class="btn border">
+    <a href="{% url 'user_profile' %}" class="btn border">
                         <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
                         <span class="badge">{{user}}</span>
 
@@ -75,7 +75,7 @@ home
 
 
     <!-- Cart Start -->
-    {% csrf_token %}
+
     <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5">
@@ -107,9 +107,9 @@ home
                                                         <i class="fa fa-minus"></i>
                                                     </button>
                                                 </div>
-                                                <input type="number" class="form-control form-control-sm bg-secondary text-center quantity-input" id="quantityInput{{ cart_item.id }}" name="quantity" value="{{ cart_item.quantity }}" readonly>
+                                                <input type="number" class="form-control form-control-sm bg-secondary text-center quantity-input" id="quantityInput{{ cart_item.id }}" name="quantity" value="{{ cart_item.quantity }}" {% if cart_item.quantity >= cart_item.variant.stock %}disabled{% endif %} readonly>
                                                 <div class="input-group-append">
-                                                    <button type="button" class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ cart_item.id }}">
+                                                    <button type="button" class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ cart_item.id }}" {% if cart_item.quantity >= cart_item.variant.stock %}disabled{% endif %} >
                                                         <i class="fa fa-plus"></i>
                                                     </button>
                                                 </div>
@@ -153,7 +153,9 @@ home
                             <h5>Total</h5>
                             <h5>{{user_cart.get_total_price}}</h5>
                         </div>
+                        <a href="{% url 'shipping_address' %}">
                         <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -162,6 +164,17 @@ home
         </div>
       </div>
     </div>
+    <div class="container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+
 
     <!-- Cart End -->
 

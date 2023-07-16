@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from store.models import CategoryTable, ProductTable, ProductVariant, Brands, Size, VariantImage
+from orders.models import *
 
 
 # Create your views here.
@@ -318,3 +319,29 @@ def edit_variant(request, variant_id):
             return redirect('products')
 
         return render(request, 'admin_panel/edit-variant.html', {'variant': variant})
+
+
+def orders(request):
+    if request.user.is_superuser:
+        orders = Order.objects.all()
+        context = {
+            'orders':orders
+        }
+
+        return render(request,'admin_panel/orders.html',context)
+
+def user_order_detail(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = order.orderitem_set.all
+
+    context = {
+        'order': order,
+        'items': order_items
+    }
+    return render(request, 'admin_panel/user-order-details.html', context)
+
+def user_order_cancellation(request,order_id):
+    if request.user.is_superuser:
+        Order.objects.get(id=order_id).delete()
+
+        return redirect('orders')

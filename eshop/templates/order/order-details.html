@@ -1,0 +1,102 @@
+{% extends 'homepage/base.html' %}
+{% load static %}
+{% block title %}
+orders
+{% endblock %}
+
+{% block content %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col">
+        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="user-profile">User</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Orders</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4">
+        <!-- Side Bar Content -->
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img src="{% static 'image/user.png' %}" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3">{{ request.user }}</h5>
+          </div>
+        </div>
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body p-0">
+            <ul class="list-group list-group-flush rounded-3">
+              <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
+                <i></i>
+                <a href="{% url 'user_profile' %}" style="color:black;"><p class="mb-0">Profile</p></a>
+              </li>
+              <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
+                <i style="color: #333333;"></i>
+                <a href="{% url 'user_address' %}" style="color:black;"><p class="mb-0">Address</p></a>
+              </li>
+              <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
+                <i style="color: #55acee;"></i>
+                <p class="mb-0" style="color:black;">Wallet</p>
+              </li>
+              <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
+                <i style="color: #ac2bac;"></i>
+                 <a href="{% url 'view_orders' %}" style="color:black;"><p class="mb-0">orders</p></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+       <div class="col-lg-8">
+        <!-- Order Details -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Order Details</h5>
+            <p><strong>Order ID: </strong>{{ order.id }}</p>
+            <p><strong>Order Date: </strong>{{ order.order_date }}</p>
+            <p><strong>Delivery Date: </strong>{{ order.delivery_date }}</p>
+            <p><strong>Price: </strong>{{ order.total_price }}</p>
+            <p><strong>Payment method: </strong>{{ order.payment_method }}</p>
+            <p><strong>Delivery Status: </strong>{{ order.payment_status }}</p>
+            <p><strong>Delivery Address</strong></p>
+             <div class="col-md-4 mb-4">
+                  <div class="address-card p-4">
+                        <p class="mb-2"><strong>Name: </strong>{{ order.address.first_name }} {{ order.address.last_name }}</p>
+                        <p class="mb-2"><strong>House no./Name: </strong>{{ order.address.house_name }}</p>
+                        <p class="mb-2"><strong>Area: </strong>{{ order.address.area }}</p>
+                        <p class="mb-2"><strong>City: </strong>{{ order.address.city }}</p>
+                        <p class="mb-2"><strong>State: </strong>{{ order.address.state }}</p>
+                        <p class="mb-2"><strong>Zip code: </strong>{{ order.address.pincode }}</p>
+                    </div>
+                </div>
+              <h6 class="mb-3">Products</h6>
+             <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in items %}
+                <tr>
+                  <td>{{ item.product.slug }}</td>
+                  <td>{{ item.product.price }}</td>
+                  <td>{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

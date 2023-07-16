@@ -1,0 +1,67 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+category
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+<div class="container-fluid">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">orders</h5>
+              <table class="table table-striped mt-2">
+              <thead>
+                <tr>
+                <th>user ID</th>
+                <th>user name</th>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Delivery Date</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>view</th>
+                <th>Cancel</th>
+              </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+              <tr>
+                <td class="align-middle">{{ order.user.id }}</td>
+                <td class="align-middle">{{ order.user.username }}</td>
+               <td class="align-middle">{{ order.id }}</td>
+                <td class="align-middle">{{ order.order_date }}</td>
+                <td class="align-middle">{{ order.delivery_date }}</td>
+                <td class="align-middle">{{ order.total_price }}</td>
+                <td class="align-middle">{{ order.payment_status }}</td>
+                  <td class="align-middle">
+                  <a href="{% url 'user_order_details' order.id %}">
+                    <button class="btn btn-sm btn-success">view</button>
+                  </a>
+                </td>
+                <td class="align-middle">
+                    {% if order.payment_status == 'PENDING' %}
+                  <a href="{% url 'user_order_cancellation' order.id %}">
+                    <button class="btn btn-sm btn-danger">Cancel</button>
+                  </a>
+                    {% else %}
+                    <p > Delivered</p>
+
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+     </div>
+</div>
+<
+
+
+{% endblock %}

@@ -11,5 +11,6 @@ urlpatterns = [
                   path('user-address', views.user_address, name='user_address'),
                   path('add-user-address', views.add_user_address, name='add_user_address'),
                   path('edit-address/<int:address_id>', views.edit_address, name='edit_address'),
-                  path('delete-address/<int:address_id>', views.delete_address, name='delete_address')
+                  path('delete-address/<int:address_id>', views.delete_address, name='delete_address'),
+                  path('change-password', views.change_user_password, name='change_user_password')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

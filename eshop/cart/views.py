@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from .models import Cart, CartItem, WishList
@@ -33,22 +34,17 @@ def add_to_cart(request, variant_id):
     variant = ProductVariant.objects.get(id=variant_id)
     user = request.user
     cart, _ = Cart.objects.get_or_create(user=user)
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, variant=variant, price=variant.price)
 
-    if not created:
+    try:
+        cart_item = CartItem.objects.get(cart=cart, variant=variant)
         if cart_item.quantity < variant.stock:
             cart_item.quantity += 1
             cart_item.price = cart_item.get_item_price()
             cart_item.save()
-        else:
-            # Handle case when quantity exceeds stock
-            # You can show an error message or take appropriate action
-            pass
-    else:
-        cart_item.quantity = 1  # Set initial quantity to 1 for newly created item
-        cart_item.price = cart_item.get_item_price()
-        cart_item.save()
 
+    except CartItem.DoesNotExist:
+        cart_item = CartItem.objects.create(cart=cart, variant=variant, price=variant.price)
+        cart_item.save()
     return redirect('cart')
 
 
@@ -61,7 +57,6 @@ def remove_cart_item(request, id):
 def quantity_update(request, cart_item_id):
     if request.method == 'POST':
         quantity = request.POST.get('quantity')
-        print("########################", quantity)
         cart_item = CartItem.objects.get(id=cart_item_id)
         product_variant = cart_item.variant
 
@@ -71,6 +66,7 @@ def quantity_update(request, cart_item_id):
             cart_item.save()
             print("Cart item updated successfully.")
         else:
+            messages.warning(request,'Requested quantity exceeds available stock.')
             print("Requested quantity exceeds available stock.")
     return redirect('cart')
 
@@ -96,19 +92,20 @@ def add_to_wishlist(request, variant_id):
     variant = ProductVariant.objects.get(id=variant_id)
     user = request.user
     cart, _ = Cart.objects.get_or_create(user=user)
-    wishlist_item, created = WishList.objects.get_or_create(wishlist=cart, variant=variant, price=variant.price)
-    if not created:
+
+    try:
+        wishlist_item = WishList.objects.get(wishlist=cart, variant=variant)
         if wishlist_item.quantity < variant.stock:
             wishlist_item.quantity += 1
-
             wishlist_item.price = wishlist_item.get_item_price()
             wishlist_item.save()
 
         else:
-            # Handle case when quantity exceeds stock
-            # You can show an error message or take appropriate action
-            pass
+            messages.warning(request,'stock limit reached')
 
+    except WishList.DoesNotExist:
+        wishlist_item = WishList.objects.create(wishlist=cart, variant=variant, price=variant.price)
+        wishlist_item.save()
     return redirect('wishlist')
 
 
