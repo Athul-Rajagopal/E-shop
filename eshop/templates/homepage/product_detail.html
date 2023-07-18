@@ -1,84 +1,89 @@
 {% extends 'homepage/base.html' %}
 {% load static %}
+
 {% block title %}
-home
+  Product details
 {% endblock %}
+
 {% block link %}
-<link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        body {
+            background-color: #fafafa;
+        }
 
-<style type="text/css">
-    body {
-        background-color: #fafafa;
-    }
+        .imgBox {
+            width: 300px;
+            height: 300px;
+            position: relative; /* Add this line */
+        }
+         .imgBox img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
 
-    img {
-        display: block;
-    }
-
-    .imgBox {
-        width: 400px;
-        height: 550px;
-    }
-
-</style>
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="{% static 'js/jquery.imgzoom.js' %}"></script>
+         .selected-size {
+            background-color: #F1B709;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.css">
 {% endblock %}
 
 {% block user %}
 {% if request.user.is_authenticated %}
     <a href="{% url 'user_profile' %}" class="btn border">
-                        <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
-                        <span class="badge">{{user}}</span>
-
-
-
-                        <!-- <i class="fas fa-shopping-cart text-primary"></i> -->
-                    </a>
+        <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
+        <span class="badge">{{user}}</span>
+    </a>
 {% endif %}
-
 {% endblock %}
 
 {% block content %}
 <!-- Navbar Start -->
-    <div class="container-fluid mb-5">
-      <div class="row border-top px-xl-5">
-        <div class="col-lg-12">
-          <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
-            <a href="" class="text-decoration-none d-block d-lg-none">
-              <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shop</h1>
-            </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-              <div class="navbar-nav mr-auto py-0">
-                <a href="/" class="nav-item nav-link ">Home</a>
-                <a href="{% url 'shop' 'formal-shirt'%}" class="nav-item nav-link active">Shop</a>
-                <div class="nav-item dropdown">
-                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Categories</a>
-                  <div class="dropdown-menu">
-                    {% for category in categories %}
-                    <a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
-                    {% endfor %}
-                  </div>
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+<div class="container-fluid mb-5">
+  <div class="row border-top px-xl-5">
+    <div class="col-lg-12">
+      <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+        <a href="" class="text-decoration-none d-block d-lg-none">
+          <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shop</h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+          <div class="navbar-nav mr-auto py-0">
+            <a href="/" class="nav-item nav-link ">Home</a>
+            <a href="{% url 'shop' 'formal-shirt'%}" class="nav-item nav-link active">Shop</a>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Categories</a>
+              <div class="dropdown-menu">
+                {% for category in categories %}
+                <a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                {% endfor %}
               </div>
-              {% if user.is_authenticated %}
-              <div class="navbar-nav ml-auto py-0">
-                <a href="{% url 'signout' %}" class="nav-item nav-link">Sign out</a>
-              </div>
-              {% else %}
-              <div class="navbar-nav ml-auto py-0">
-                <a href="{% url 'signin' %}" class="nav-item nav-link">Login</a>
-                <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
-              </div>
-              {% endif %}
             </div>
-          </nav>
-    <!-- Navbar End -->
+            <a href="contact.html" class="nav-item nav-link">Contact</a>
+          </div>
+          {% if user.is_authenticated %}
+          <div class="navbar-nav ml-auto py-0">
+            <a href="{% url 'signout' %}" class="nav-item nav-link">Sign out</a>
+          </div>
+          {% else %}
+          <div class="navbar-nav ml-auto py-0">
+            <a href="{% url 'signin' %}" class="nav-item nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
+          </div>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+<!-- Navbar End -->
 
 <!-- Breadcrumb Start -->
 <div class="container-fluid">
@@ -96,137 +101,128 @@ home
 <!-- Shop Detail Start -->
 
 <div class="container-fluid pb-5">
-    <div class="row px-xl-5">
-        <div class="col-lg-5 mb-30">
-            <div id="product-carousel" class="carousel slide" data-ride="carousel">
+        <div class="row px-xl-5">
+            <div class="col-lg-5 mb-30">
+                <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner bg-light">
-                        {% for image in images %}
-                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <div class="imgBox">
-                                    <div class="zoom"></div>
-                                    <img id="variantImage" class="img-fluid zoom" src="{{ image.display_image.url }}" alt="Image">
-                                </div>
+                       {% for image in images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="">
+                                <img class="img-fluid zoom" src="{{ image.display_image.url }}" alt="Image">
                             </div>
-                        {% endfor %}
+                        </div>
+                    {% endfor %}
                     </div>
-
-                <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
-                    <i class="fa fa-2x fa-angle-left text-dark"></i>
-                </a>
-                <a class="carousel-control-next" href="#product-carousel" data-slide="next">
-                    <i class="fa fa-2x fa-angle-right text-dark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="col-lg-7 h-auto mb-30">
-            <div class="h-100 bg-light p-30">
-                <h3>{{ variants.product.name }}</h3>
-                <div class="d-flex mb-3">
-                    <div class="text-primary mr-2">
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star-half-alt"></small>
-                        <small class="far fa-star"></small>
-                    </div>
-                    <small class="pt-1">(99 Reviews)</small>
-                </div>
-                <h3 class="font-weight-semi-bold mb-4">{{ variants.price }}</h3>
-                <p class="mb-4">{{ variants.product.description }}</p>
-               <div class="d-flex mb-4">
-                <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>
-                <form>
-                    {% for size in product.productvariant_set.all %}
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="color-{{ size.id }}" name="color">
-                        <label class="custom-control-label" for="color-{{ size.id }}">
-                            <a href="{% url 'product_detail'  size.slug  %}" > {{ size.size }} </a>
-                        </label>
-                    </div>
-                {% endfor %}
-
-
-
-
-
-                </form>
-            </div>
-
-               <div class="d-flex align-items-center mb-4 pt-2">
-                    <a href="{% url 'add_to_cart' variants.id %}">
-                        <button class="btn btn-primary px-3 mr-1"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                    <!-- Carousel controls -->
+                    <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                        <i class="fa fa-2x fa-angle-left text-dark"></i>
                     </a>
-                    <a href="{% url 'add_to_wishlist' variants.id %}">
-                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Wishlist</button>
+                    <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                        <i class="fa fa-2x fa-angle-right text-dark"></i>
                     </a>
                 </div>
-
+            </div>
+            <div class="col-lg-7 h-auto mb-30">
+                <div class="h-100 bg-light p-30">
+                    <h3>{{ variants.product.name }}</h3>
+                    <div class="d-flex mb-3">
+                        <div class="text-primary mr-2">
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star-half-alt"></small>
+                            <small class="far fa-star"></small>
+                        </div>
+                        <small class="pt-1">(99 Reviews)</small>
+                    </div>
+                    <h3 class="font-weight-semi-bold mb-4">{{ variants.price }}</h3>
+                    <p class="mb-4">{{ variants.product.description }}</p>
+                    <div class="d-flex mb-4">
+                        <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>
+                        <form>
+                            {% for size in product.productvariant_set.all %}
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="color-{{ size.id }}" name="color" {% if size == variants %}checked{% endif %}>
+                                    <label class="custom-control-label {% if size == variants %}selected-size{% endif %}" for="color-{{ size.id }}">
+                                        <a href="{% url 'product_detail'  size.slug  %}" > {{ size.size }} </a>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        <a href="{% url 'add_to_cart' variants.id %}">
+                            <button class="btn btn-primary px-3 mr-1"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                        </a>
+                        <a href="{% url 'add_to_wishlist' variants.id %}">
+                            <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Wishlist</button>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row px-xl-5">
-            <div class="col">
-                <div class="bg-light p-30">
-                    <div class="nav nav-tabs mb-4">
-                        <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="bg-light p-30">
+                <div class="nav nav-tabs mb-4">
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-pane-1">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p>{{ variants.product.description }}</p>
                     </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="tab-pane-1">
-                            <h4 class="mb-3">Product Description</h4>
-                            <p>{{ variants.product.description }}</p>
-                        </div>
-                        <div class="tab-pane fade" id="tab-pane-3">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">1 review for "Product Name"</h4>
-                                    <div class="media mb-4">
-                                        <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                        <div class="media-body">
-                                            <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                            <div class="text-primary mb-2">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                            </div>
-                                            <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
+                    <div class="tab-pane fade" id="tab-pane-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="mb-4">1 review for "Product Name"</h4>
+                                <div class="media mb-4">
+                                    <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                    <div class="media-body">
+                                        <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
+                                        <div class="text-primary mb-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <i class="far fa-star"></i>
                                         </div>
+                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">Leave a review</h4>
-                                    <small>Your email address will not be published. Required fields are marked *</small>
-                                    <div class="d-flex my-3">
-                                        <p class="mb-0 mr-2">Your Rating * :</p>
-                                        <div class="text-primary">
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="mb-4">Leave a review</h4>
+                                <small>Your email address will not be published. Required fields are marked *</small>
+                                <div class="d-flex my-3">
+                                    <p class="mb-0 mr-2">Your Rating * :</p>
+                                    <div class="text-primary">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
                                     </div>
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="message">Your Review *</label>
-                                            <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Your Name *</label>
-                                            <input type="text" class="form-control" id="name">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Your Email *</label>
-                                            <input type="email" class="form-control" id="email">
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
-                                        </div>
-                                    </form>
                                 </div>
+                                <form>
+                                    <div class="form-group">
+                                        <label for="message">Your Review *</label>
+                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Your Name *</label>
+                                        <input type="text" class="form-control" id="name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Your Email *</label>
+                                        <input type="email" class="form-control" id="email">
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -234,23 +230,20 @@ home
             </div>
         </div>
     </div>
-    <!-- Shop Detail End -->
 
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
-
-
-
-<script>
-  $(document).ready(function() {
-    $('.zoom').elevateZoom({
-      zoomWindowWidth: 300,
-      zoomWindowHeight: 200
-    });
-  });
-</script>
 {% endblock %}
 
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.zoom').elevateZoom({
+                zoomWindowWidth: 300,
+                zoomWindowHeight: 300
 
+            });
+        });
+    </script>
+{% endblock %}

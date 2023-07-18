@@ -325,10 +325,11 @@ def orders(request):
     if request.user.is_superuser:
         orders = Order.objects.all()
         context = {
-            'orders':orders
+            'orders': orders
         }
 
-        return render(request,'admin_panel/orders.html',context)
+        return render(request, 'admin_panel/orders.html', context)
+
 
 def user_order_detail(request, order_id):
     order = Order.objects.get(id=order_id)
@@ -340,8 +341,26 @@ def user_order_detail(request, order_id):
     }
     return render(request, 'admin_panel/user-order-details.html', context)
 
-def user_order_cancellation(request,order_id):
+
+def user_order_cancellation(request, order_id):
     if request.user.is_superuser:
         Order.objects.get(id=order_id).delete()
 
         return redirect('orders')
+
+
+def change_status(request, order_id):
+    if request.user.is_superuser:
+        order = Order.objects.get(id=order_id)
+        if request.method == 'POST':
+            status = request.POST['status']
+            print('%%%%%%%%%%%%%%%',status)
+            order.payment_status = str(status)
+            order.save()
+
+            return redirect('orders')
+
+        context = {
+            'order': order
+        }
+        return render(request, 'admin_panel/change-status.html', context)

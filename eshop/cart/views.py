@@ -27,48 +27,51 @@ def cart(request):
         }
         return render(request, 'cart/cart.html', context)
     else:
-        return redirect('home')
+        return render(request,'cart/cart.html')
 
 
 def add_to_cart(request, variant_id):
-    variant = ProductVariant.objects.get(id=variant_id)
-    user = request.user
-    cart, _ = Cart.objects.get_or_create(user=user)
+    if request.user.is_authenticated:
+        variant = ProductVariant.objects.get(id=variant_id)
+        user = request.user
+        cart, _ = Cart.objects.get_or_create(user=user)
 
-    try:
-        cart_item = CartItem.objects.get(cart=cart, variant=variant)
-        if cart_item.quantity < variant.stock:
-            cart_item.quantity += 1
-            cart_item.price = cart_item.get_item_price()
+        try:
+            cart_item = CartItem.objects.get(cart=cart, variant=variant)
+            if cart_item.quantity < variant.stock:
+                cart_item.quantity += 1
+                cart_item.price = cart_item.get_item_price()
+                cart_item.save()
+
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(cart=cart, variant=variant, price=variant.price)
             cart_item.save()
-
-    except CartItem.DoesNotExist:
-        cart_item = CartItem.objects.create(cart=cart, variant=variant, price=variant.price)
-        cart_item.save()
-    return redirect('cart')
+        return redirect('cart')
 
 
 def remove_cart_item(request, id):
-    CartItem.objects.get(id=id).delete()
-    return redirect('cart')
+    if request.user.is_authenticated:
+        CartItem.objects.get(id=id).delete()
+        return redirect('cart')
 
 
 # views.py
 def quantity_update(request, cart_item_id):
-    if request.method == 'POST':
-        quantity = request.POST.get('quantity')
-        cart_item = CartItem.objects.get(id=cart_item_id)
-        product_variant = cart_item.variant
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            quantity = request.POST.get('quantity')
+            cart_item = CartItem.objects.get(id=cart_item_id)
+            product_variant = cart_item.variant
 
-        if int(quantity) <= product_variant.stock:
-            cart_item.quantity = int(quantity)
-            cart_item.price = product_variant.price * int(quantity)
-            cart_item.save()
-            print("Cart item updated successfully.")
-        else:
-            messages.warning(request,'Requested quantity exceeds available stock.')
-            print("Requested quantity exceeds available stock.")
-    return redirect('cart')
+            if int(quantity) <= product_variant.stock:
+                cart_item.quantity = int(quantity)
+                cart_item.price = product_variant.price * int(quantity)
+                cart_item.save()
+                print("Cart item updated successfully.")
+            else:
+                messages.warning(request,'Requested quantity exceeds available stock.')
+                print("Requested quantity exceeds available stock.")
+        return redirect('cart')
 
 
 # wishlist
@@ -89,24 +92,25 @@ def wishlist(request):
 
 
 def add_to_wishlist(request, variant_id):
-    variant = ProductVariant.objects.get(id=variant_id)
-    user = request.user
-    cart, _ = Cart.objects.get_or_create(user=user)
+    if request.user.is_authenticated:
+        variant = ProductVariant.objects.get(id=variant_id)
+        user = request.user
+        cart, _ = Cart.objects.get_or_create(user=user)
 
-    try:
-        wishlist_item = WishList.objects.get(wishlist=cart, variant=variant)
-        if wishlist_item.quantity < variant.stock:
-            wishlist_item.quantity += 1
-            wishlist_item.price = wishlist_item.get_item_price()
-            wishlist_item.save()
+        # try:
+        #     wishlist_item = WishList.objects.get(wishlist=cart, variant=variant)
+        #     if wishlist_item.quantity < variant.stock:
+        #         wishlist_item.quantity += 1
+        #         wishlist_item.price = wishlist_item.get_item_price()
+        #         wishlist_item.save()
+        #
+        #     else:
+        #         messages.warning(request,'stock limit reached')
 
-        else:
-            messages.warning(request,'stock limit reached')
-
-    except WishList.DoesNotExist:
+        # except WishList.DoesNotExist:
         wishlist_item = WishList.objects.create(wishlist=cart, variant=variant, price=variant.price)
         wishlist_item.save()
-    return redirect('wishlist')
+        return redirect('wishlist')
 
 
 def remove_wishlist_item(request, id):

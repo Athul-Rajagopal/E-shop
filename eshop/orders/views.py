@@ -2,6 +2,9 @@ from django.shortcuts import redirect, render
 from cart.models import *
 from store.models import *
 from .models import *
+import razorpay
+from django.conf import settings
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -17,6 +20,8 @@ def shipping_address(request):
         }
 
         return render(request, 'order/shipping-address.html', context)
+    else:
+        return redirect('signin')
 
 
 def add_address(request):
@@ -106,3 +111,69 @@ def order_detail(request, order_id):
         'items': order_items
     }
     return render(request, 'order/order-details.html', context)
+
+
+def initiate_payment(request):
+    if request.method == 'POST':
+        # Retrieve the total price and other details from the backend
+        carts = Cart.objects.get(user=request.user)
+        items = CartItem.objects.filter(cart=carts)
+        total_price = sum(item.price * item.quantity for item in items)
+        client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+        payment = client.order.create({'amount': int(total_price * 100), 'currency': 'INR', 'payment_capture': 1})
+        print('#######################################',payment)
+        response_data = {
+            'order_id': payment['id'],
+            'amount': payment['amount'],
+            'currency': payment['currency'],
+            'key': settings.RAZORPAY_API_KEY
+        }
+        return JsonResponse(response_data)
+
+    # Return an error response if the request method is not POST
+    return JsonResponse({'error': 'Invalid request method'})
+
+
+def online_payment_order(request, address_id):
+    if request.method == 'POST':
+        payment_id = request.POST.getlist('payment_id')[0]
+        orderId = request.POST.getlist('orderId')[0]
+        signature = request.POST.getlist('signature')[0]
+        address = UserAddress.objects.get(id=address_id)
+        carts = Cart.objects.get(user=request.user)
+        cart_items = CartItem.objects.filter(cart=carts)
+        total_price = sum(item.price * item.quantity for item in cart_items)
+
+        order = Order.objects.create(
+            user=request.user,
+            address=address,
+            total_price=total_price,
+            payment_status='PAID',
+            payment_method='PAYPAL',
+            online_payment_id=payment_id,
+            online_payment_signature=signature,
+            online_payment_order_id=orderId,
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.variant,
+                price=item.variant.price,
+                quantity=item.quantity
+
+            )
+            variant = item.variant
+            variant.stock -= item.quantity
+            variant.save()
+
+            cart_items.delete()
+
+        return JsonResponse({'orderid' : order.id})
+    else:
+        # Handle invalid request method (GET, etc.)
+        return JsonResponse({'error': 'Invalid request method'})
+
+
+def order_success(request):
+    return render(request,'order/order-success.html')

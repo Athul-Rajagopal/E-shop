@@ -25,5 +25,6 @@ urlpatterns = [
     path('edit-variant/<int:variant_id>', views.edit_variant, name='edit_variant'),
     path('orders',views.orders,name='orders'),
     path('user-order-details/<int:order_id>',views.user_order_detail,name='user_order_details'),
-    path('user-order-cancellation/<int:order_id>', views.user_order_cancellation, name='user_order_cancellation')
+    path('user-order-cancellation/<int:order_id>', views.user_order_cancellation, name='user_order_cancellation'),
+    path('change-status/<int:order_id>', views.change_status, name='change_status')
 ]

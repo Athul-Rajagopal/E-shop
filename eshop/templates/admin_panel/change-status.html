@@ -1,7 +1,7 @@
 {%extends 'admin_panel/adminbase.html'%}
 {% load static %}
 {% block title %}
-Orders
+Change-order-status
 {% endblock %}
 {% block content %}
 
@@ -24,13 +24,10 @@ Orders
                 <th>Delivery Date</th>
                 <th>Price</th>
                 <th>Status</th>
-                <th>view</th>
-                <th>Cancel</th>
-                <th>Order status</th>
               </tr>
               </thead>
               <tbody>
-                {% for order in orders %}
+
               <tr>
                 <td class="align-middle">{{ order.user.id }}</td>
                 <td class="align-middle">{{ order.user.username }}</td>
@@ -38,36 +35,30 @@ Orders
                 <td class="align-middle">{{ order.order_date }}</td>
                 <td class="align-middle">{{ order.delivery_date }}</td>
                 <td class="align-middle">{{ order.total_price }}</td>
-                <td class="align-middle">{{ order.payment_status }}</td>
-                  <td class="align-middle">
-                  <a href="{% url 'user_order_details' order.id %}">
-                    <button class="btn btn-sm btn-success">view</button>
-                  </a>
-                </td>
-                <td class="align-middle">
-                    {% if order.payment_status == 'PENDING' %}
-                  <a href="{% url 'user_order_cancellation' order.id %}">
-                    <button class="btn btn-sm btn-danger">Cancel</button>
-                  </a>
-                    {% else %}
-                    <p > Delivered</p>
 
-                    {% endif %}
+                <td class="align-middle">
+                    <form action="{% url 'change_status' order.id %}" method="post">{% csrf_token %}
+                    <select name="status">
+                      <option >PENDING</option>
+                      <option >CANCELLED</option>
+                      <option >DELIVERED</option>
+                      <option >SHIPPED</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-sm btn-warning">Done</button>
+
+                    </form>
                 </td>
-                  <td class="align-middle">
-                  <a href="{% url 'change_status' order.id %}">
-                    <button class="btn btn-sm btn-warning">change</button>
-                  </a>
-                </td>
+
               </tr>
-              {% endfor %}
+
               </tbody>
             </table>
           </div>
         </div>
      </div>
 </div>
-<
+
 
 
 {% endblock %}

@@ -141,3 +141,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RAZORPAY_API_KEY = 'rzp_test_AK2vXCBWn3bYdW'
+RAZORPAY_API_SECRET = 'G3GN0gw4fsRsb6i2iLNhE5b9'

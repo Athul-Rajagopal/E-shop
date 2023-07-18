@@ -1,12 +1,13 @@
 {% extends 'homepage/base.html' %}
 {% load static %}
 {% block title %}
-home
+User
 {% endblock %}
-{% block link %}
+
+{% block content %}
 <style>
   .address-card {
-    background-color: #ffffff;
+    background-color: #f2f7f4;
     border: 1px solid #ccc;
     padding: 20px;
     border-radius: 5px;
@@ -40,13 +41,14 @@ home
   }
 
   .address-container {
-    max-height: 500px;
-    overflow-y: auto;
+    max-height: 500px !important;
+    overflow-y: auto !important;
   }
-</style>
-{% endblock %}
 
-{% block content %}
+</style>
+
+
+
 <section style="background-color: #eee;">
   <div class="container py-5">
     <div class="row">
@@ -92,7 +94,6 @@ home
           </div>
         </div>
       </div>
-
       <div class="col-lg-4 address-container">
         {% for details in details %}
         <div class="address-card">
@@ -114,13 +115,11 @@ home
         </div>
         {% endfor %}
       </div>
-
       <div class="col-lg-4 add-address-button">
         <a href="{% url 'add_user_address' %}">
           <button class="btn btn-primary btn-sm">Add Address</button>
         </a>
       </div>
-
     </div>
   </div>
 </section>

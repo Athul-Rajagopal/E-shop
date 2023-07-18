@@ -1,7 +1,7 @@
 {% extends 'homepage/base.html' %}
 {% load static %}
 {% block title %}
-home
+Wishlist
 {% endblock %}
 {% block user %}
 {% if request.user.is_authenticated %}
@@ -79,7 +79,7 @@ home
                             <th>Products</th>
                             <th>Variant</th>
                             <th>Price</th>
-                            <th>Quantity</th>
+<!--                            <th>Quantity</th>-->
                             <th>Total</th>
                             <th>Add to Cart</th>
                             <th>Remove</th>
@@ -95,21 +95,21 @@ home
                             </td>
                             <td class="align-middle">{{ item.variant.size }}</td>
                             <td class="align-middle">{{ item.variant.price }}</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                     <div class="input-group-prepend">
-                                        <button type="button" class="btn btn-sm btn-primary btn-minus" data-cart-item-id="{{ item.id }}">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="number" class="form-control form-control-sm bg-secondary text-center quantity-input" id="quantityInput{{item.id }}" name="quantity" value="{{item.quantity }}" readonly>
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ item.id }}">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
+<!--                            <td class="align-middle">-->
+<!--                                <div class="input-group quantity mx-auto" style="width: 100px;">-->
+<!--                                     <div class="input-group-prepend">-->
+<!--                                        <button type="button" class="btn btn-sm btn-primary btn-minus" data-cart-item-id="{{ item.id }}">-->
+<!--                                            <i class="fa fa-minus"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                    <input type="number" class="form-control form-control-sm bg-secondary text-center quantity-input" id="quantityInput{{item.id }}" name="quantity" value="{{item.quantity }}" readonly>-->
+<!--                                    <div class="input-group-append">-->
+<!--                                        <button type="button" class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ item.id }}">-->
+<!--                                            <i class="fa fa-plus"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </td>-->
                             <td class="align-middle">{{ item.price }}</td>
                             <td >
                                 <div >
@@ -149,48 +149,48 @@ home
     <script src="js/main.js"></script>
 
 
-<script>
-    $(document).ready(function () {
-        $('.btn-minus').click(function () {
-            var cartItemId = $(this).data('cart-item-id');
-            var quantityInput = $('#quantityInput' + cartItemId);
-            var currentQuantity = parseInt(quantityInput.val());
-            if (currentQuantity > 1) {
-                quantityInput.val(currentQuantity - 1);
-                updateCartItemQuantity(cartItemId, currentQuantity - 1);
-            }
-        });
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        $('.btn-minus').click(function () {-->
+<!--            var cartItemId = $(this).data('cart-item-id');-->
+<!--            var quantityInput = $('#quantityInput' + cartItemId);-->
+<!--            var currentQuantity = parseInt(quantityInput.val());-->
+<!--            if (currentQuantity > 1) {-->
+<!--                quantityInput.val(currentQuantity - 1);-->
+<!--                updateCartItemQuantity(cartItemId, currentQuantity - 1);-->
+<!--            }-->
+<!--        });-->
 
-        $('.btn-plus').click(function () {
-            var cartItemId = $(this).data('cart-item-id');
-            var quantityInput = $('#quantityInput' + cartItemId);
-            var currentQuantity = parseInt(quantityInput.val());
-            quantityInput.val(currentQuantity + 1);
-            updateCartItemQuantity(cartItemId, currentQuantity + 1);
-        });
+<!--        $('.btn-plus').click(function () {-->
+<!--            var cartItemId = $(this).data('cart-item-id');-->
+<!--            var quantityInput = $('#quantityInput' + cartItemId);-->
+<!--            var currentQuantity = parseInt(quantityInput.val());-->
+<!--            quantityInput.val(currentQuantity + 1);-->
+<!--            updateCartItemQuantity(cartItemId, currentQuantity + 1);-->
+<!--        });-->
 
-        function updateCartItemQuantity(cartItemId, quantity) {
-            var data = {
-                quantity: quantity,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                type: 'POST',
-                url: '/quantity_update_wishlist/' + cartItemId + '/',
-                data: data,
-                success: function (response) {
-                    // Handle success response, if needed
-                    console.log("Successful");
-                    location.reload()
-                },
-                error: function (xhr) {
-                    // Handle error response, if needed
-                    console.log("Unsuccessful");
-                }
-            });
-        }
-    });
-</script>
+<!--        function updateCartItemQuantity(cartItemId, quantity) {-->
+<!--            var data = {-->
+<!--                quantity: quantity,-->
+<!--                csrfmiddlewaretoken: '{{ csrf_token }}'-->
+<!--            };-->
+<!--            $.ajax({-->
+<!--                type: 'POST',-->
+<!--                url: '/quantity_update_wishlist/' + cartItemId + '/',-->
+<!--                data: data,-->
+<!--                success: function (response) {-->
+<!--                    // Handle success response, if needed-->
+<!--                    console.log("Successful");-->
+<!--                    location.reload()-->
+<!--                },-->
+<!--                error: function (xhr) {-->
+<!--                    // Handle error response, if needed-->
+<!--                    console.log("Unsuccessful");-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 
 
 
