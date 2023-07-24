@@ -63,12 +63,13 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form action="{% url 'search_product' %}" method="post">
+                    {% csrf_token %}
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        <input type="text" class="form-control" placeholder="Search for products" name="item_name">
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search" aria-hidden="true" style="color: #F1B709;"></i>
+                                <button type="submit"> <i class="fa fa-search" aria-hidden="true" style="color: #F1B709;"></i></button>
                             </span>
                         </div>
                     </div>
@@ -150,7 +151,7 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <!-- JavaScript Libraries -->
+    <!-- Include DataTables and Bootstrap JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
@@ -163,6 +164,20 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Include DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Custom JavaScript for DataTable -->
+    <script>
+        $(document).ready(function () {
+            $('#ordersTable').DataTable({
+                pagingType: 'full', // Use full pagination style
+                // Add any other options and configurations as needed
+            });
+        });
+    </script>
 
     {% block script %}
 

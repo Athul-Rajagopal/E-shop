@@ -1,4 +1,4 @@
-{%extends 'admin_panel/adminbase.html'%}
+{% extends 'admin_panel/adminbase.html' %}
 {% load static %}
 {% block title %}
 Orders
@@ -9,65 +9,111 @@ Orders
 <a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
 {% endblock %}
 
-<div class="container-fluid">
+<div class="content-wrapper">
+    <div class="container-fluid">
         <div class="container-fluid">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">orders</h5>
-              <table class="table table-striped mt-2">
-              <thead>
-                <tr>
-                <th>user ID</th>
-                <th>user name</th>
-                <th>Order ID</th>
-                <th>Order Date</th>
-                <th>Delivery Date</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>view</th>
-                <th>Cancel</th>
-                <th>Order status</th>
-              </tr>
-              </thead>
-              <tbody>
-                {% for order in orders %}
-              <tr>
-                <td class="align-middle">{{ order.user.id }}</td>
-                <td class="align-middle">{{ order.user.username }}</td>
-               <td class="align-middle">{{ order.id }}</td>
-                <td class="align-middle">{{ order.order_date }}</td>
-                <td class="align-middle">{{ order.delivery_date }}</td>
-                <td class="align-middle">{{ order.total_price }}</td>
-                <td class="align-middle">{{ order.payment_status }}</td>
-                  <td class="align-middle">
-                  <a href="{% url 'user_order_details' order.id %}">
-                    <button class="btn btn-sm btn-success">view</button>
-                  </a>
-                </td>
-                <td class="align-middle">
-                    {% if order.payment_status == 'PENDING' %}
-                  <a href="{% url 'user_order_cancellation' order.id %}">
-                    <button class="btn btn-sm btn-danger">Cancel</button>
-                  </a>
-                    {% else %}
-                    <p > Delivered</p>
-
-                    {% endif %}
-                </td>
-                  <td class="align-middle">
-                  <a href="{% url 'change_status' order.id %}">
-                    <button class="btn btn-sm btn-warning">change</button>
-                  </a>
-                </td>
-              </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-          </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">orders</h5>
+                    <table id="ordersTable" class="table table-striped mt-2">
+                        <thead>
+                            <tr>
+                                <th>user ID</th>
+                                <th>user name</th>
+                                <th>Order ID</th>
+                                <th>Order Date</th>
+                                <th>Delivery Date</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>view</th>
+                                <th>Cancel</th>
+                                <th>Order status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td class="align-middle">{{ order.user.id }}</td>
+                                <td class="align-middle">{{ order.user.username }}</td>
+                                <td class="align-middle">{{ order.id }}</td>
+                                <td class="align-middle">{{ order.order_date }}</td>
+                                <td class="align-middle">{{ order.delivery_date }}</td>
+                                <td class="align-middle">{{ order.total_price }}</td>
+                                <td class="align-middle">{{ order.payment_status }}</td>
+                                <td class="align-middle">
+                                    <a href="{% url 'user_order_details' order.id %}">
+                                        <button class="btn btn-sm btn-success">view</button>
+                                    </a>
+                                </td>
+                                <td class="align-middle">
+                                    {% if order.payment_status == 'DELIVERED' %}
+                                    <p>Delivered</p>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-danger btn-cancel" data-order-id="{{ order.id }}">Cancel</button>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle">
+                                    <a href="{% url 'change_status' order.id %}">
+                                        <button class="btn btn-sm btn-warning">change</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-     </div>
+    </div>
 </div>
-<
+<div class="modal" tabindex="-1" role="dialog" id="cancelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this order?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmCancel">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        console.log("jQuery is working!");
+    });
+</script>
 
+
+<script>
+    // Function to handle the Cancel button click
+    $(document).ready(function () {
+        $(".btn-cancel").on("click", function () {
+            const orderId = $(this).data("order-id");
+            // Show the confirmation modal when the Cancel button is clicked
+            $("#cancelModal").modal('show');
+
+            // Set the order ID as a data attribute of the Confirm button
+            $("#confirmCancel").data("order-id", orderId);
+        });
+
+        // Function to handle the Confirm button click inside the modal
+        $("#confirmCancel").on("click", function () {
+            const orderId = $(this).data("order-id");
+            // Hide the confirmation modal
+            $("#cancelModal").modal('hide');
+
+            // Proceed with the cancellation by redirecting to the cancellation URL
+            window.location.href = "{% url 'user_order_cancellation' 0 %}".replace("0", orderId);
+        });
+    });
+</script>
 
 {% endblock %}

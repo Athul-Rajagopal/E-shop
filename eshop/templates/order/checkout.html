@@ -99,6 +99,7 @@ Checkout
                     <div class="d-flex justify-content-between">
                         <p>{{item.variant}}</p>
                         <p>{{item.price}}</p>
+                        <p>{{item.variant.discount_percent}}%OFF</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -203,9 +204,9 @@ Checkout
                           signature: signature
                       },
                       success: function(response) {
-                          var id = response.orderId
-                          console.log("Order ID:", id);
-                          window.location.href = "/order_success/";
+                          var id = response.orderid
+                          console.log("Order ID:",typeof id);
+                          window.location.href = `/order_success/${Number(id)}`;
 
                           console.log("Order placed successfully!");
                       },

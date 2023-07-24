@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'admin_panel.apps.AdminPanelConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
+    'image_cropping',
 ]
 
 MIDDLEWARE = [

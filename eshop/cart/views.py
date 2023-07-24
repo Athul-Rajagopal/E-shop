@@ -7,14 +7,21 @@ from django.http import JsonResponse
 from decimal import Decimal
 from django.db.models import Sum
 from django.db.models import F
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Create your views here.
 def cart(request):
     if request.user.is_authenticated:
-        user_cart = Cart.objects.get(user=request.user)
-        cart_item = user_cart.cartitem_set.all
-        categories = CategoryTable.objects.all()
+        try:
+            user_cart = Cart.objects.get(user=request.user)
+            cart_item = user_cart.cartitem_set.all
+            categories = CategoryTable.objects.all()
+
+        except ObjectDoesNotExist:
+            user_cart = Cart.objects.create(user=request.user)
+            cart_item = user_cart.cartitem_set.all
+            categories = CategoryTable.objects.all()
 
         # user_cart = Cart.objects.get(user=request.user)
         # items = user_cart.cartitem_set.all
@@ -27,7 +34,7 @@ def cart(request):
         }
         return render(request, 'cart/cart.html', context)
     else:
-        return render(request,'cart/cart.html')
+        return render(request, 'cart/cart.html')
 
 
 def add_to_cart(request, variant_id):
@@ -43,8 +50,12 @@ def add_to_cart(request, variant_id):
                 cart_item.price = cart_item.get_item_price()
                 cart_item.save()
 
+            elif cart_item.quantity > variant.stock:
+                messages.error(request, 'maximum quantity reached')
+
         except CartItem.DoesNotExist:
-            cart_item = CartItem.objects.create(cart=cart, variant=variant, price=variant.price)
+            cart_item = CartItem.objects.create(cart=cart, variant=variant,
+                                                price=variant.price - (variant.price * variant.discount_percent) / 100)
             cart_item.save()
         return redirect('cart')
 
@@ -69,7 +80,7 @@ def quantity_update(request, cart_item_id):
                 cart_item.save()
                 print("Cart item updated successfully.")
             else:
-                messages.warning(request,'Requested quantity exceeds available stock.')
+                messages.warning(request, 'Requested quantity exceeds available stock.')
                 print("Requested quantity exceeds available stock.")
         return redirect('cart')
 
@@ -77,8 +88,13 @@ def quantity_update(request, cart_item_id):
 # wishlist
 def wishlist(request):
     if request.user.is_authenticated:
-        user_wishlist = Cart.objects.get(user=request.user)
-        wishlist_item = user_wishlist.wishlist_set.all
+        try:
+            user_wishlist = Cart.objects.get(user=request.user)
+            wishlist_item = user_wishlist.wishlist_set.all
+
+        except ObjectDoesNotExist:
+            user_wishlist = Cart.objects.create(user=request.user)
+            wishlist_item = user_wishlist.wishlist_set.all
         categories = CategoryTable.objects.all()
         context = {
             'wishlist': wishlist_item,
@@ -129,7 +145,8 @@ def wishlist_to_cart(request, item_id):
 
             cart_item.price = cart_item.get_item_price()
             cart_item.save()
-
+        elif cart_item.quantity > item.variant.stock:
+            messages.error(request, 'maximum limit reached')
     return redirect('cart')
 
 

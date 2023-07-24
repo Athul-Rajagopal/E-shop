@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from store.models import CategoryTable, ProductTable, ProductVariant, Brands, Size, VariantImage
 from orders.models import *
-
+from image_cropping.utils import get_backend
+from PIL import Image
 
 # Create your views here.
 def admin_login(request):
@@ -27,7 +28,10 @@ def admin_login(request):
 
 
 def home(request):
-    return render(request, 'admin_panel/adminHome.html')
+    last_orders = Order.objects.order_by('-order_date')[:5]
+
+    return render(request, 'admin_panel/adminHome.html', {
+        'last_orders': last_orders})
 
 
 def userdetails(request):
@@ -130,7 +134,6 @@ def add_product(request):
     if request.user.is_superuser:
         if request.method == 'POST':
             product_name = request.POST['product_name']
-
             category = request.POST['category']
             brand = request.POST['brand']
             description = request.POST['description']
@@ -155,6 +158,14 @@ def add_product(request):
             product_variant = ProductVariant.objects.create(product=product, size=size_id, price=price, stock=stock,
                                                             display_image=variant_image)
             product_variant.save()
+
+            # image cropping
+            # cropping = request.POST.get('eshop_productvariant_display_image')
+            # if cropping:
+            #     image = Image.open(variant_image)
+            #     backend = get_backend()
+            #     image = backend.crop(image, *map(float, cropping.split(',')))
+            #     image.save(product_variant.display_image.path)
 
             for image in variant_images:
                 variant_images = VariantImage.objects.create(product_variant=product_variant, display_image=image)
@@ -323,7 +334,7 @@ def edit_variant(request, variant_id):
 
 def orders(request):
     if request.user.is_superuser:
-        orders = Order.objects.all()
+        orders = Order.objects.order_by('-id')
         context = {
             'orders': orders
         }

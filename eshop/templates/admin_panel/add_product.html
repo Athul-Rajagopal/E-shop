@@ -14,6 +14,7 @@ Product
 <br>
 
 <div class="container">
+    <div class="content-wrapper">
 
 
 <form action="add-product" method="POST" enctype="multipart/form-data">
@@ -41,15 +42,16 @@ Product
         </select>
         <label  class="formbold-form-label"> Category </label>
     </div>
-
     <div class="formbold-textarea">
         <select class="form-select" aria-label="Default select example" name="brand" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
-            <option selected>select</option>
+            <option disabled selected>select</option> <!-- Add 'disabled' attribute to prevent selection -->
             {% for brand in brands %}
-                <option value="{{brand.id}}">{{brand.name}}</option>
+                {% if brand.id != 'select' %} <!-- Exclude 'select' option from form submission -->
+                    <option value="{{ brand.id }}">{{ brand.name }}</option>
+                {% endif %}
             {% endfor %}
         </select>
-        <label  class="formbold-form-label"> Brand </label>
+        <label class="formbold-form-label">Brand</label>
     </div>
 
     <div class="formbold-textarea">
@@ -78,15 +80,23 @@ Product
 
 
 
-       <b> Attach image</b>
-        <label  >
-            <input type="file" name="variant_image"   style="margin-top: 10px;">
+       <b> Attach display image</b>
+<!--        <label  >-->
+<!--            <input type="file" name="variant_image"   style="margin-top: 10px;">-->
 
-        </label>
-    <br>
+<!--        </label>-->
+<!--    <br>-->
+
+    <!-- Add an image preview -->
+<!--<img id="image-preview" src="#" alt="Image Preview" style="max-width: 50%; height: 50%; display: none;">-->
+<!-- Update the file input element -->
+<input type="file" name="variant_image" id="upload" style="margin-top: 10px;">
+
+
+
 
     <b>Attach more images</b>
-     <input type="file" name="variant_images" id="upload"  multiple style="margin-top: 10px;">
+     <input type="file" name="variant_images" id="upload2"  multiple style="margin-top: 10px;">
 
 
     <div style="display: flex;">
@@ -97,6 +107,7 @@ Product
       
   </form>
 
+</div>
 </div>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -114,14 +125,14 @@ Product
       justify-content: center;
       padding: 30px 48px;
     }
-  
+
     .formbold-form-wrapper {
       margin: 0 auto;
       max-width: 730px;
       width: 100%;
-      
+
     }
-  
+
     .formbold-input-flex {
       display: flex;
       gap: 20px;
@@ -136,12 +147,12 @@ Product
       display: flex;
       flex-direction: column-reverse;
     }
-  
+
     .formbold-form-input {
       width: 100%;
       padding-bottom: 10px;
       border: 2px solid rgba(128, 128, 128, 0.448);
-      
+
       background: #FFFFFF;
       font-weight: 500;
       font-size: 16px;
@@ -166,7 +177,7 @@ Product
     .formbold-form-input:focus + .formbold-form-label {
       color: #6A64F1;
     }
-  
+
     .formbold-input-file {
       margin-top: 30px;
     }
@@ -182,7 +193,7 @@ Product
       gap: 10px;
       position: relative;
     }
-  
+
     .formbold-filename-wrapper {
       display: flex;
       flex-direction: column;
@@ -200,7 +211,7 @@ Product
     .formbold-filename svg {
       cursor: pointer;
     }
-  
+
     .formbold-btn {
       font-size: 16px;
       border-radius: 5px;
@@ -215,6 +226,6 @@ Product
     .formbold-btn:hover {
       box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
     }
-  
+
   </style>
   {% endblock %}       

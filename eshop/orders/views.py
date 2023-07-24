@@ -67,6 +67,8 @@ def place_order(request, address_id):
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=cart)
         total_price = sum(cart_item.price for cart_item in cart_items)
+        print("********************************************")
+        print(total_price)
 
         order = Order.objects.create(user=request.user, address=address,
                                      payment_status='PENDING',
@@ -83,7 +85,7 @@ def place_order(request, address_id):
             order_item.save()
 
         cart_items.delete()
-        return render(request, 'order/order-placed.html')
+        return render(request, 'order/order-placed.html',{'order':order,'order_item':order_item})
 
 
 def view_order(request):
@@ -97,7 +99,13 @@ def view_order(request):
 
 def cancel_order(request, order_id):
     if request.user.is_authenticated:
-        Order.objects.get(id=order_id).delete()
+        order = Order.objects.get(id=order_id)
+        order_items = OrderItem.objects.filter(order=order)
+        for item in order_items:
+            variant = item.product
+            variant.stock += item.quantity
+            variant.save()
+        order.delete()
 
         return redirect('view_orders')
 
@@ -118,10 +126,11 @@ def initiate_payment(request):
         # Retrieve the total price and other details from the backend
         carts = Cart.objects.get(user=request.user)
         items = CartItem.objects.filter(cart=carts)
-        total_price = sum(item.price * item.quantity for item in items)
+        total_price = sum(item.price for item in items)
         client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
         payment = client.order.create({'amount': int(total_price * 100), 'currency': 'INR', 'payment_capture': 1})
         print('#######################################',payment)
+        print(total_price)
         response_data = {
             'order_id': payment['id'],
             'amount': payment['amount'],
@@ -169,11 +178,12 @@ def online_payment_order(request, address_id):
 
             cart_items.delete()
 
-        return JsonResponse({'orderid' : order.id})
+        return JsonResponse({'orderid': order.id})
     else:
         # Handle invalid request method (GET, etc.)
         return JsonResponse({'error': 'Invalid request method'})
 
 
-def order_success(request):
-    return render(request,'order/order-success.html')
+def order_success(request,order_id):
+    order = Order.objects.get(id=order_id)
+    return render(request,'order/order-success.html',{'order':order})

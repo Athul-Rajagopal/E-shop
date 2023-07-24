@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 # Create your views here.
 def home(request):
     categories = CategoryTable.objects.all()
-    print(categories)
     return render(request, 'homepage/home.html', {'categories': categories})
 
 
@@ -19,13 +18,36 @@ def shop(request, slug):
     categories = CategoryTable.objects.all()
     category_id = CategoryTable.objects.get(slug=slug)
     products = ProductTable.objects.filter(category=category_id)
+
     variants = []
-    for product in products:
-        variant = ProductVariant.objects.filter(product=product).first()
-        variants.append(variant)
+
+    # filters
+    size_filter = request.GET.getlist('size')
+    brand_filter = request.GET.getlist('brand')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    print(size_filter)
+    print(brand_filter)
+    print(min_price,max_price)
+
+    if brand_filter:
+        products = products.filter(brandName__name__in=brand_filter)
+
+    if min_price and max_price and size_filter:
+        variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter, price__gte=min_price,
+                                   price__lte=max_price)
+
+    elif min_price and max_price:
+        variants = ProductVariant.objects.filter(price__gte=min_price, price__lte=max_price)
+
+    elif size_filter:
+        variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter)
+
+    else:
+        variants = [ProductVariant.objects.filter(product=product).first() for product in products]
 
     # Instantiate the Paginator object
-    paginator = Paginator(variants, 9)  # Show 9 variants per page
+    paginator = Paginator(variants, 12)  # Show 9 variants per page
 
     # Get the current page number from the request
     page_number = request.GET.get('page')
@@ -170,3 +192,40 @@ def change_user_password(request):
 
     else:
         return redirect('signin')
+
+
+def search_product(request):
+    if request.method == 'POST':
+        item_name = request.POST['item_name']
+        print(item_name, type(item_name))
+        products = ProductTable.objects.filter(name__icontains=item_name)
+        variants = []
+
+        for product in products:
+            variant = ProductVariant.objects.filter(product=product).first()
+            variants.append(variant)
+
+        size = Size.objects.all()
+        brands = Brands.objects.all()
+        categories = CategoryTable.objects.all()
+
+        paginator = Paginator(variants, 9)  # Show 9 variants per page
+
+        # Get the current page number from the request
+        page_number = request.GET.get('page')
+
+        # Get the Page object for the requested page
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'categories': categories,
+            'products': products,
+            'variants': variants,
+            'size': size,
+            'brands': brands,
+            'page_obj': page_obj,
+        }
+
+        return render(request, 'homepage/search-product.html', context)
+
+    return redirect('home')

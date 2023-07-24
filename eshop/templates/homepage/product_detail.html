@@ -12,11 +12,6 @@
             background-color: #fafafa;
         }
 
-        .imgBox {
-            width: 300px;
-            height: 300px;
-            position: relative; /* Add this line */
-        }
          .imgBox img {
             display: block;
             max-width: 100%;
@@ -29,6 +24,7 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+ 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.css">
 {% endblock %}
@@ -107,8 +103,8 @@
                     <div class="carousel-inner bg-light">
                        {% for image in images %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <div class="">
-                                <img class="img-fluid zoom" src="{{ image.display_image.url }}" alt="Image">
+                            <div >
+                                <img class="img-fluid-detail zoom" src="{{ image.display_image.url }}" alt="Image">
                             </div>
                         </div>
                     {% endfor %}
@@ -141,7 +137,7 @@
                         <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>
                         <form>
                             {% for size in product.productvariant_set.all %}
-                                <div class="custom-control custom-radio custom-control-inline">
+                                <div class="custom-control custom-radio custom-control-inline" style="z-index:0;">
                                     <input type="radio" class="custom-control-input" id="color-{{ size.id }}" name="color" {% if size == variants %}checked{% endif %}>
                                     <label class="custom-control-label {% if size == variants %}selected-size{% endif %}" for="color-{{ size.id }}">
                                         <a href="{% url 'product_detail'  size.slug  %}" > {{ size.size }} </a>

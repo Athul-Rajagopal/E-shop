@@ -14,7 +14,7 @@ Product
 <br>
 
 <div class="container">
-
+<div class="content-wrapper">
 
 <form action="{% url 'edit_product' product.id %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -59,6 +59,7 @@ Product
   </form>
 </div>
 </div>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     * {
