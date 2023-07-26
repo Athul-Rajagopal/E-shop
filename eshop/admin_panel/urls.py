@@ -26,5 +26,7 @@ urlpatterns = [
     path('orders',views.orders,name='orders'),
     path('user-order-details/<int:order_id>', views.user_order_detail, name='user_order_details'),
     path('user-order-cancellation/<int:order_id>', views.user_order_cancellation, name='user_order_cancellation'),
+    path('order-invoice/<int:order_id>', views.user_order_invoice, name='user_order_invoice'),
+    path('download_invoice/<int:order_id>', views.download_user_invoice, name='download_user_invoice'),
     path('change-status/<int:order_id>', views.change_status, name='change_status')
 ]

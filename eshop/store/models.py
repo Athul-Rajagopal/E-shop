@@ -114,3 +114,10 @@ class UserAddress(models.Model):
         return f"{self.user_id.username}"
 
 
+
+class UserWallet(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    wallet_amount = models.DecimalField(max_digits=8,decimal_places=2,default=0)
+
+    def __str__(self):
+        return self.user.username

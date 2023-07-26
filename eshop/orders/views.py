@@ -1,10 +1,16 @@
 from django.shortcuts import redirect, render
 from cart.models import *
+from io import BytesIO
 from store.models import *
 from .models import *
+from store.models import UserWallet
 import razorpay
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from decimal import Decimal
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
 
 
 # Create your views here.
@@ -85,7 +91,7 @@ def place_order(request, address_id):
             order_item.save()
 
         cart_items.delete()
-        return render(request, 'order/order-placed.html',{'order':order,'order_item':order_item})
+        return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
 
 
 def view_order(request):
@@ -101,6 +107,7 @@ def cancel_order(request, order_id):
     if request.user.is_authenticated:
         order = Order.objects.get(id=order_id)
         order_items = OrderItem.objects.filter(order=order)
+
         for item in order_items:
             variant = item.product
             variant.stock += item.quantity
@@ -129,7 +136,7 @@ def initiate_payment(request):
         total_price = sum(item.price for item in items)
         client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
         payment = client.order.create({'amount': int(total_price * 100), 'currency': 'INR', 'payment_capture': 1})
-        print('#######################################',payment)
+        print('#######################################', payment)
         print(total_price)
         response_data = {
             'order_id': payment['id'],
@@ -184,6 +191,57 @@ def online_payment_order(request, address_id):
         return JsonResponse({'error': 'Invalid request method'})
 
 
-def order_success(request,order_id):
+def order_success(request, order_id):
     order = Order.objects.get(id=order_id)
-    return render(request,'order/order-success.html',{'order':order})
+    return render(request, 'order/order-success.html', {'order': order})
+
+
+def return_order(request, order_id):
+    if request.user.is_authenticated:
+        order = Order.objects.get(id=order_id)
+        user = order.user
+        try:
+            get_wallet = UserWallet.objects.get(user=user)
+            get_wallet.wallet_amount = get_wallet.wallet_amount + Decimal(str(order.total_price))
+            get_wallet.save()
+            order.delete()
+        except ObjectDoesNotExist:
+            user_wallet = UserWallet.objects.create(user=user, wallet_amount=order.total_price)
+            user_wallet.save()
+
+        return redirect('view_orders')
+
+    return render(request, 'order/view-orders.html')
+
+
+def order_invoice(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = order.orderitem_set.all
+
+    context = {
+        'order': order,
+        'items': order_items
+    }
+    return render(request, 'order/order-invoice.html', context)
+
+
+# download the invoice pdf
+
+
+def download_invoice(request, order_id):
+    order = Order.objects.get(id=order_id)
+    items = order.orderitem_set.all()
+
+    # Render the PDF template with CSS styles
+    template = 'order/order-invoice.html'
+    context = {'order': order, 'items': items}
+    html = render_to_string(template, context)
+
+    # Create a PDF document using xhtml2pdf
+    pdf_file = BytesIO()
+    pisa.CreatePDF(html, dest=pdf_file)
+
+    # Set the response with the PDF content as an attachment
+    response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="order_invoice.pdf"'
+    return response

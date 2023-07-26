@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from store.models import CategoryTable, ProductTable, ProductVariant, Brands, Size, VariantImage
 from orders.models import *
-from image_cropping.utils import get_backend
-from PIL import Image
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from io import BytesIO
 
 # Create your views here.
 def admin_login(request):
@@ -375,3 +377,33 @@ def change_status(request, order_id):
             'order': order
         }
         return render(request, 'admin_panel/change-status.html', context)
+
+def user_order_invoice(request, order_id):
+    if request.user.is_superuser:
+        order = Order.objects.get(id=order_id)
+        order_items = order.orderitem_set.all
+
+        context = {
+            'order': order,
+            'items': order_items
+        }
+        return render(request, 'admin_panel/user-order-invoice.html', context)
+
+def download_user_invoice(request, order_id):
+    order = Order.objects.get(id=order_id)
+    items = order.orderitem_set.all()
+
+    # Render the PDF template with CSS styles
+    template = 'admin_panel/user-order-invoice.html'
+    context = {'order': order, 'items': items}
+    html = render_to_string(template, context)
+
+    # Create a PDF document using xhtml2pdf
+    pdf_file = BytesIO()
+    pisa.CreatePDF(html, dest=pdf_file)
+
+    # Set the response with the PDF content as an attachment
+    response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="order_invoice.pdf"'
+    return response
+

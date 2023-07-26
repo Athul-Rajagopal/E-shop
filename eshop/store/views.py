@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import CategoryTable, ProductTable, ProductVariant, VariantImage, Size, Brands, UserAddress, State
+from .models import *
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 
@@ -28,14 +28,14 @@ def shop(request, slug):
     max_price = request.GET.get('max_price')
     print(size_filter)
     print(brand_filter)
-    print(min_price,max_price)
+    print(min_price, max_price)
 
     if brand_filter:
         products = products.filter(brandName__name__in=brand_filter)
 
     if min_price and max_price and size_filter:
         variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter, price__gte=min_price,
-                                   price__lte=max_price)
+                                                 price__lte=max_price)
 
     elif min_price and max_price:
         variants = ProductVariant.objects.filter(price__gte=min_price, price__lte=max_price)
@@ -229,3 +229,11 @@ def search_product(request):
         return render(request, 'homepage/search-product.html', context)
 
     return redirect('home')
+
+
+def user_wallet(request):
+    wallet,_ = UserWallet.objects.get_or_create(user=request.user)
+    context = {
+        'wallet': wallet
+    }
+    return render(request, 'homepage/user-wallet.html', context)

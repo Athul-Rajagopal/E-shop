@@ -47,7 +47,9 @@ Orders
                                 </td>
                                 <td class="align-middle">
                                     {% if order.payment_status == 'DELIVERED' %}
-                                    <p>Delivered</p>
+                                    <a href="{% url 'return_order' order.id %}">
+                                      <button class="btn btn-sm btn-primary">Return</button>
+                                    </a>
                                     {% else %}
                                     <button class="btn btn-sm btn-danger btn-cancel" data-order-id="{{ order.id }}">Cancel</button>
                                     {% endif %}
@@ -66,6 +68,7 @@ Orders
         </div>
     </div>
 </div>
+<!-- Modal for cancellation confirmation -->
 <div class="modal" tabindex="-1" role="dialog" id="cancelModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -85,33 +88,24 @@ Orders
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        console.log("jQuery is working!");
-    });
-</script>
 
+<!-- jQuery script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!-- JavaScript for handling the Cancel button click and confirmation -->
 <script>
-    // Function to handle the Cancel button click
     $(document).ready(function () {
         $(".btn-cancel").on("click", function () {
             const orderId = $(this).data("order-id");
-            // Show the confirmation modal when the Cancel button is clicked
-            $("#cancelModal").modal('show');
 
-            // Set the order ID as a data attribute of the Confirm button
-            $("#confirmCancel").data("order-id", orderId);
-        });
+            // Show a confirmation popup using the JavaScript built-in 'confirm' function
+            const confirmed = confirm("Are you sure you want to cancel this order?");
 
-        // Function to handle the Confirm button click inside the modal
-        $("#confirmCancel").on("click", function () {
-            const orderId = $(this).data("order-id");
-            // Hide the confirmation modal
-            $("#cancelModal").modal('hide');
-
-            // Proceed with the cancellation by redirecting to the cancellation URL
-            window.location.href = "{% url 'user_order_cancellation' 0 %}".replace("0", orderId);
+            // Proceed with the cancellation only if the user confirms in the popup
+            if (confirmed) {
+                // Redirect to the cancellation URL
+                window.location.href = "{% url 'user_order_cancellation' 0 %}".replace("0", orderId);
+            }
         });
     });
 </script>

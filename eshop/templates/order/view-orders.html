@@ -52,7 +52,7 @@ orders
               </li>
               <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
                 <i style="color: #55acee;"></i>
-                <p class="mb-0" style="color:black;">Wallet</p>
+                <a href="{% url 'user_wallet' %}" style="color:black;"><p class="mb-0">Wallet</p></a>
               </li>
               <li class="list-group-item d-flex justify-content-center align-items-center p-3 btn btn-outline-primary ms-1">
                 <i style="color: #ac2bac;"></i>
@@ -93,11 +93,11 @@ orders
                 </td>
                 <td class="align-middle">
                   {% if order.payment_status == 'DELIVERED' %}
-                    <p>DELIVERED</p>
-                  {% else %}
-                    <a href="{% url 'cancel_order' order.id %}">
-                      <button class="btn btn-sm btn-danger">Cancel</button>
+                    <a href="{% url 'return_order' order.id %}">
+                      <button class="btn btn-sm btn-primary">Return</button>
                     </a>
+                  {% else %}
+                      <button class="btn btn-sm btn-danger btn-cancel" data-order-id="{{ order.id }}">Cancel</button>
                   {% endif %}
                 </td>
               </tr>
@@ -110,6 +110,25 @@ orders
 
   </div>
 </section>
+<div class="modal" tabindex="-1" role="dialog" id="cancelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this order?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmCancel">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -132,7 +151,21 @@ orders
       });
     });
   </script>
+<script>
+    $(document).ready(function () {
+        $(".btn-cancel").on("click", function () {
+            const orderId = $(this).data("order-id");
 
-  <!-- Include Font Awesome icons (you might already have this) -->
-<!--  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>-->
+            // Show a confirmation popup using the JavaScript built-in 'confirm' function
+            const confirmed = confirm("Are you sure you want to cancel this order?");
+
+            // Proceed with the cancellation only if the user confirms in the popup
+            if (confirmed) {
+                // Redirect to the cancellation URL
+                window.location.href = "{% url 'cancel_order' 0 %}".replace("0", orderId);
+            }
+        });
+    });
+</script>
+
 {% endblock %}

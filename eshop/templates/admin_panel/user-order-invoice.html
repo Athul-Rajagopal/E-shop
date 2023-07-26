@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+             max-width: 75%;
+              margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .address-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Invoice</h1>
+    <p><strong>User ID:</strong> {{ order.user.id }}</p>
+    <p><strong>User name:</strong> {{ order.user.username }}</p>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+    <p><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+
+    <h3>Delivery Address</h3>
+    <div class="address-card">
+        <p><strong>Name:</strong> {{ order.address.first_name }} {{ order.address.last_name }}</p>
+        <p><strong>House no./Name:</strong> {{ order.address.house_name }}</p>
+        <p><strong>Area:</strong> {{ order.address.area }}</p>
+        <p><strong>City:</strong> {{ order.address.city }}</p>
+        <p><strong>State:</strong> {{ order.address.state }}</p>
+        <p><strong>Zip code:</strong> {{ order.address.pincode }}</p>
+    </div>
+
+    <h3>Products</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.slug }}</td>
+                <td>₹{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <a href="{% url 'download_user_invoice' order.id %}" target="_blank"><button class="btn" >Download PDF</button></a>
+    </div>
+
+
+
+</body>
+</html>
