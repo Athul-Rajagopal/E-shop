@@ -44,7 +44,7 @@ class ProductTable(models.Model):
     brandName = models.ForeignKey(Brands,on_delete=models.CASCADE,null=True)
     slug = models.SlugField(blank=True)
     is_active = models.BooleanField(default=True)
-
+    discount_percent = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
@@ -69,7 +69,7 @@ class ProductVariant(models.Model):
     display_image = models.ImageField(upload_to='product_image/',null=True)
     slug = models.SlugField(blank=True,unique=True)
     is_active = models.BooleanField(default=True)
-    discount_percent = models.IntegerField(default=0)
+    # discount_percent = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
         if not self.slug:
             slug_str = f"{self.product.name} {self.size}"

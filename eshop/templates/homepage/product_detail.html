@@ -1,5 +1,7 @@
 {% extends 'homepage/base.html' %}
 {% load static %}
+{% load custom_filters %}
+
 
 {% block title %}
   Product details
@@ -131,7 +133,15 @@
                         </div>
                         <small class="pt-1">(99 Reviews)</small>
                     </div>
-                    <h3 class="font-weight-semi-bold mb-4">{{ variants.price }}</h3>
+                    <h3 class="font-weight-semi-bold mb-4">₹{{ variants.price }}</h3>
+                    {% if variants.product.discount_percent != 0 %}
+                        {% with discount_price=variants.price|mul:variants.product.discount_percent|div:100 %}
+                            {% with offer_price=variants.price|sub:discount_price %}
+                                <h3 class="font-weight-semi-bold mb-4">{{ variants.product.discount_percent }}% OFF!!</h3>
+                                <h3 class="font-weight-semi-bold mb-4">Offer price: ₹{{ offer_price }}</h3>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endif %}
                     <p class="mb-4">{{ variants.product.description }}</p>
                     <div class="d-flex mb-4">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>

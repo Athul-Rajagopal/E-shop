@@ -72,7 +72,8 @@ def place_order(request, address_id):
         address = UserAddress.objects.get(id=address_id)
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=cart)
-        total_price = sum(cart_item.price for cart_item in cart_items)
+        # total_price = sum(cart_item.price for cart_item in cart_items)
+        total_price = cart.total_price
         print("********************************************")
         print(total_price)
 
@@ -133,7 +134,8 @@ def initiate_payment(request):
         # Retrieve the total price and other details from the backend
         carts = Cart.objects.get(user=request.user)
         items = CartItem.objects.filter(cart=carts)
-        total_price = sum(item.price for item in items)
+        # total_price = sum(item.price for item in items)
+        total_price = carts.total_price
         client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
         payment = client.order.create({'amount': int(total_price * 100), 'currency': 'INR', 'payment_capture': 1})
         print('#######################################', payment)
@@ -158,7 +160,8 @@ def online_payment_order(request, address_id):
         address = UserAddress.objects.get(id=address_id)
         carts = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=carts)
-        total_price = sum(item.price * item.quantity for item in cart_items)
+        # total_price = sum(item.price * item.quantity for item in cart_items)
+        total_price = carts.total_price
 
         order = Order.objects.create(
             user=request.user,

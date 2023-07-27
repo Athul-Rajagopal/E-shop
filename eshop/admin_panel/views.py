@@ -8,6 +8,8 @@ from orders.models import *
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from io import BytesIO
+from cart.models import Coupon
+
 
 # Create your views here.
 def admin_login(request):
@@ -367,7 +369,7 @@ def change_status(request, order_id):
         order = Order.objects.get(id=order_id)
         if request.method == 'POST':
             status = request.POST['status']
-            print('%%%%%%%%%%%%%%%',status)
+            print('%%%%%%%%%%%%%%%', status)
             order.payment_status = str(status)
             order.save()
 
@@ -377,6 +379,7 @@ def change_status(request, order_id):
             'order': order
         }
         return render(request, 'admin_panel/change-status.html', context)
+
 
 def user_order_invoice(request, order_id):
     if request.user.is_superuser:
@@ -388,6 +391,7 @@ def user_order_invoice(request, order_id):
             'items': order_items
         }
         return render(request, 'admin_panel/user-order-invoice.html', context)
+
 
 def download_user_invoice(request, order_id):
     order = Order.objects.get(id=order_id)
@@ -407,3 +411,49 @@ def download_user_invoice(request, order_id):
     response['Content-Disposition'] = 'attachment; filename="order_invoice.pdf"'
     return response
 
+
+def add_coupon(request):
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            coupon_code = request.POST['coupon_code']
+            discount_price = request.POST['discount_price']
+            expiry_date = request.POST['expiry_date']
+            minimum_amount = request.POST['minimum_amount']
+
+            coupon = Coupon.objects.create(coupon_code=coupon_code, discount_price=discount_price,
+                                           expiry_date=expiry_date, minimum_amount=minimum_amount)
+            coupon.save()
+
+            return redirect('coupons')
+
+        return render(request, 'admin_panel/add-coupon.html')
+
+
+def list_coupon(request):
+    if request.user.is_superuser:
+        coupons = Coupon.objects.all()
+        context = {
+            'coupons': coupons
+        }
+        return render(request, 'admin_panel/coupons.html', context)
+
+
+def edit_coupon(request, coupon_id):
+    if request.user.is_superuser:
+        coupon = Coupon.objects.get(id=coupon_id)
+        if request.method == 'POST':
+            coupon_code = request.POST['coupon_code']
+            discount_price = request.POST['discount_price']
+            expiry_date = request.POST['expiry_date']
+            minimum_amount = request.POST['minimum_amount']
+
+            coupon = Coupon.objects.get(id=coupon_id)
+            coupon.coupon_code = coupon_code
+            coupon.discount_price = discount_price
+            coupon.expiry_date = expiry_date
+            coupon.minimum_amount = minimum_amount
+            coupon.save()
+
+            return redirect('coupons')
+
+        return render(request, 'admin_panel/edit-coupon.html', {'coupon': coupon})

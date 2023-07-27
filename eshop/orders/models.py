@@ -1,4 +1,4 @@
-from datetime import timedelta, timezone
+from datetime import timedelta, timezone, date
 from django.db import models
 from django.utils import timezone
 from store.models import *
@@ -57,12 +57,5 @@ class OrderItem(models.Model):
         return f"{self.order.id, self.order.tracking_no}"
 
 
-# class Coupon(models.Model):
-#     code = models.CharField(max_length=50, unique=True)
-#     discount = models.FloatField()
-#     valid_from = models.DateTimeField(default=timezone.now)
-#     valid_to = models.DateTimeField()
-#     active = models.BooleanField(default=True)
-#
-#     def __str__(self):
-#         return self.code
+# coupons
+

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from .models import Cart, CartItem, WishList
+from .models import *
 from store.models import ProductVariant, ProductTable, CategoryTable
 from django.http import JsonResponse
 from decimal import Decimal
@@ -15,21 +15,28 @@ def cart(request):
     if request.user.is_authenticated:
         try:
             user_cart = Cart.objects.get(user=request.user)
-            cart_item = user_cart.cartitem_set.all
+            cart_item = user_cart.cartitem_set.all()
             categories = CategoryTable.objects.all()
-
+            total_price = sum(cart_item.price for cart_item in cart_item)
+            coupons = Coupon.objects.filter(minimum_amount__lte=total_price)
+            user_cart.total_price = total_price
+            user_cart.save()
         except ObjectDoesNotExist:
             user_cart = Cart.objects.create(user=request.user)
             cart_item = user_cart.cartitem_set.all
             categories = CategoryTable.objects.all()
-
+            total_price = sum(cart_item.price for cart_item in cart_item)
+            user_cart.total_price = total_price
+            user_cart.save()
         # user_cart = Cart.objects.get(user=request.user)
         # items = user_cart.cartitem_set.all
 
         context = {
             'cart': cart_item,
             'user_cart': user_cart,
-            'categories': categories
+            'categories': categories,
+            'total_price':total_price,
+            'coupons':coupons
 
         }
         return render(request, 'cart/cart.html', context)
@@ -55,7 +62,7 @@ def add_to_cart(request, variant_id):
 
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(cart=cart, variant=variant,
-                                                price=variant.price - (variant.price * variant.discount_percent) / 100)
+                                                price=variant.price - (variant.price * variant.product.discount_percent) / 100)
             cart_item.save()
         return redirect('cart')
 
@@ -73,10 +80,11 @@ def quantity_update(request, cart_item_id):
             quantity = request.POST.get('quantity')
             cart_item = CartItem.objects.get(id=cart_item_id)
             product_variant = cart_item.variant
+            discount_price = product_variant.price-(product_variant.price * product_variant.product.discount_percent)/100
 
             if int(quantity) <= product_variant.stock:
                 cart_item.quantity = int(quantity)
-                cart_item.price = product_variant.price * int(quantity)
+                cart_item.price = discount_price * int(quantity)
                 cart_item.save()
                 print("Cart item updated successfully.")
             else:
@@ -90,11 +98,11 @@ def wishlist(request):
     if request.user.is_authenticated:
         try:
             user_wishlist = Cart.objects.get(user=request.user)
-            wishlist_item = user_wishlist.wishlist_set.all
+            wishlist_item = user_wishlist.wishlist_set.all()
 
         except ObjectDoesNotExist:
             user_wishlist = Cart.objects.create(user=request.user)
-            wishlist_item = user_wishlist.wishlist_set.all
+            wishlist_item = user_wishlist.wishlist_set.all()
         categories = CategoryTable.objects.all()
         context = {
             'wishlist': wishlist_item,
@@ -124,7 +132,8 @@ def add_to_wishlist(request, variant_id):
         #         messages.warning(request,'stock limit reached')
 
         # except WishList.DoesNotExist:
-        wishlist_item = WishList.objects.create(wishlist=cart, variant=variant, price=variant.price)
+        wishlist_item = WishList.objects.create(wishlist=cart, variant=variant,
+                                                price=variant.price - (variant.price * variant.product.discount_percent) / 100)
         wishlist_item.save()
         return redirect('wishlist')
 
@@ -150,17 +159,59 @@ def wishlist_to_cart(request, item_id):
     return redirect('cart')
 
 
-def quantity_update_wishlist(request, cart_item_id):
-    if request.method == 'POST':
-        quantity = request.POST.get('quantity')
-        wishlist_item = WishList.objects.get(id=cart_item_id)
-        product_variant = wishlist_item.variant
+# def quantity_update_wishlist(request, cart_item_id):
+#     if request.method == 'POST':
+#         quantity = request.POST.get('quantity')
+#         wishlist_item = WishList.objects.get(id=cart_item_id)
+#         product_variant = wishlist_item.variant
+#
+#         if int(quantity) <= product_variant.stock:
+#             wishlist_item.quantity = int(quantity)
+#             wishlist_item.price = product_variant.price * int(quantity)
+#             wishlist_item.save()
+#             print("Cart item updated successfully.")
+#         else:
+#             print("Requested quantity exceeds available stock.")
+#     return redirect('wishlist')
 
-        if int(quantity) <= product_variant.stock:
-            wishlist_item.quantity = int(quantity)
-            wishlist_item.price = product_variant.price * int(quantity)
-            wishlist_item.save()
-            print("Cart item updated successfully.")
-        else:
-            print("Requested quantity exceeds available stock.")
-    return redirect('wishlist')
+
+def apply_coupon(request):
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(user=request.user)
+        cart_items = CartItem.objects.filter(cart=cart)
+
+        total_price = sum(cart_item.price for cart_item in cart_items)
+        discount_price = 0
+
+        if request.method == 'POST':
+            coupon_code = request.POST.get('coupon')
+            try:
+                coupon = Coupon.objects.get(coupon_code=coupon_code, is_expired=False, minimum_amount__lte=total_price)
+
+                # Add a new condition to check if the user has already applied the coupon
+                user_coupon = UserCoupon.objects.filter(user=request.user, coupon=coupon.id).first()
+                if user_coupon is None:
+                    # User has not already applied the coupon
+                    user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
+                    user_coupon.save()
+                    total_price -= coupon.discount_price
+                    cart.total_price = total_price
+                    cart.save()
+
+                else:
+                    coupon_status = 'already_used'  # Set the coupon status as 'already_used'
+                    print("already used this coupon for this user")
+                    # User has already applied the coupon
+            except:
+                pass
+
+        categories = CategoryTable.objects.all()
+        context = {
+            'categories': categories,
+            'cart': cart_items,
+            'user_cart': cart,
+            'total_price': total_price
+
+        }
+        return render(request, 'cart/cart.html', context)
+

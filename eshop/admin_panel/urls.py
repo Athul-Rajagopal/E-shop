@@ -28,5 +28,8 @@ urlpatterns = [
     path('user-order-cancellation/<int:order_id>', views.user_order_cancellation, name='user_order_cancellation'),
     path('order-invoice/<int:order_id>', views.user_order_invoice, name='user_order_invoice'),
     path('download_invoice/<int:order_id>', views.download_user_invoice, name='download_user_invoice'),
-    path('change-status/<int:order_id>', views.change_status, name='change_status')
+    path('change-status/<int:order_id>', views.change_status, name='change_status'),
+    path('add-coupon', views.add_coupon, name='add_coupon'),
+    path('coupons', views.list_coupon, name='coupons'),
+    path('edit-coupon/<int:coupon_id>', views.edit_coupon, name='edit_coupon')
 ]

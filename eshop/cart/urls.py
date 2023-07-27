@@ -10,5 +10,6 @@ urlpatterns = [
     path('add-to-wishlist/<int:variant_id>', views.add_to_wishlist, name='add_to_wishlist'),
     path('remove-wishlist-item/<int:id>', views.remove_wishlist_item, name='remove_wishlist_item'),
     path('shift-to-cart/<int:item_id>', views.wishlist_to_cart, name='wishlist_to_cart'),
-    # path('quantity_update_wishlist/<int:cart_item_id>/', views.quantity_update_wishlist, name='quantity_update_wishlist'),
+    path('apply-coupon', views.apply_coupon, name='apply_coupon')
+
 ]
