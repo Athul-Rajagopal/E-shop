@@ -1,9 +1,11 @@
 from django.shortcuts import redirect, render
 from cart.models import *
 from io import BytesIO
+
+from django.urls import NoReverseMatch
+from django.views.decorators.cache import cache_control
 from store.models import *
 from .models import *
-from store.models import UserWallet
 import razorpay
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
@@ -57,6 +59,7 @@ def add_address(request):
 
 def checkout(request, address_id):
     if request.user.is_authenticated:
+
         user_details = UserAddress.objects.get(id=address_id)
         user_cart = Cart.objects.get(user=request.user)
         context = {
@@ -67,32 +70,47 @@ def checkout(request, address_id):
         return render(request, 'order/checkout.html', context)
 
 
+
+@cache_control(no_cache=True, must_validate=True, no_store=True)
 def place_order(request, address_id):
+
     if request.user.is_authenticated:
-        address = UserAddress.objects.get(id=address_id)
-        cart = Cart.objects.get(user=request.user)
-        cart_items = CartItem.objects.filter(cart=cart)
-        # total_price = sum(cart_item.price for cart_item in cart_items)
-        total_price = cart.total_price
-        print("********************************************")
-        print(total_price)
+        try:
 
-        order = Order.objects.create(user=request.user, address=address,
-                                     payment_status='PENDING',
-                                     payment_method='CASH_ON_DELIVERY', total_price=total_price)
+            address = UserAddress.objects.get(id=address_id)
+            cart = Cart.objects.get(user=request.user)
+            cart_items = CartItem.objects.filter(cart=cart)
+            # total_price = sum(cart_item.price for cart_item in cart_items)
+            total_price = cart.total_price
+            print("********************************************")
+            print(total_price)
 
-        for items in cart_items:
-            order_item = OrderItem.objects.create(order=order,
-                                                  product=items.variant,
-                                                  price=items.variant.price,
-                                                  quantity=items.quantity)
-            variant = items.variant
-            variant.stock -= items.quantity
-            variant.save()
-            order_item.save()
+            order = Order.objects.create(user=request.user, address=address,
+                                         payment_status='PENDING',
+                                         payment_method='CASH_ON_DELIVERY', total_price=total_price)
 
-        cart_items.delete()
-        return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
+            for items in cart_items:
+                order_item = OrderItem.objects.create(order=order,
+                                                      product=items.variant,
+                                                      price=items.variant.price,
+                                                      quantity=items.quantity)
+                variant = items.variant
+                variant.stock -= items.quantity
+                variant.save()
+                order_item.save()
+            if cart.coupon:
+                coupon = Coupon.objects.get(id=cart.coupon)
+                user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
+                user_coupon.save()
+            cart_items.delete()
+            return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
+
+        except NoReverseMatch:
+            return HttpResponse('Please select a valid payment method!')
+        except UnboundLocalError:
+            return redirect('checkout')
+
+    return redirect('shipping_address')
 
 
 def view_order(request):
@@ -185,8 +203,12 @@ def online_payment_order(request, address_id):
             variant = item.variant
             variant.stock -= item.quantity
             variant.save()
+        if carts.coupon:
+            coupon = Coupon.objects.get(id=carts.coupon)
+            user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
+            user_coupon.save()
 
-            cart_items.delete()
+        cart_items.delete()
 
         return JsonResponse({'orderid': order.id})
     else:
@@ -194,6 +216,7 @@ def online_payment_order(request, address_id):
         return JsonResponse({'error': 'Invalid request method'})
 
 
+@cache_control(no_cache=True, must_validate=True, no_store=True)
 def order_success(request, order_id):
     order = Order.objects.get(id=order_id)
     return render(request, 'order/order-success.html', {'order': order})
@@ -202,15 +225,9 @@ def order_success(request, order_id):
 def return_order(request, order_id):
     if request.user.is_authenticated:
         order = Order.objects.get(id=order_id)
-        user = order.user
-        try:
-            get_wallet = UserWallet.objects.get(user=user)
-            get_wallet.wallet_amount = get_wallet.wallet_amount + Decimal(str(order.total_price))
-            get_wallet.save()
-            order.delete()
-        except ObjectDoesNotExist:
-            user_wallet = UserWallet.objects.create(user=user, wallet_amount=order.total_price)
-            user_wallet.save()
+        if order.payment_status == 'DELIVERED':
+            order.payment_status = 'RETURNED'
+            order.save()
 
         return redirect('view_orders')
 

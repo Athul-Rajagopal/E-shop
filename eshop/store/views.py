@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.core.paginator import Paginator
@@ -8,8 +9,21 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
+    products_with_offers = ProductTable.objects.filter(discount_percent__gt=0)
+
+    # Fetch all the banners associated with products that have offers
+    banners = Banner.objects.filter(producttable__in=products_with_offers)
     categories = CategoryTable.objects.all()
-    return render(request, 'homepage/home.html', {'categories': categories})
+    products = ProductTable.objects.order_by('-id')[:5]
+    variants = [ProductVariant.objects.filter(product=product).first() for product in products]
+
+    context = {
+        'categories': categories,
+        'variants': variants,
+        'products_with_offers': products_with_offers,
+        'banners': banners,
+    }
+    return render(request, 'homepage/home.html',context)
 
 
 def shop(request, slug):
@@ -29,16 +43,17 @@ def shop(request, slug):
     print(size_filter)
     print(brand_filter)
     print(min_price, max_price)
+    print(products)
 
     if brand_filter:
-        products = products.filter(brandName__name__in=brand_filter)
+        products = products.filter(brandName__name__in=brand_filter,category=category_id)
 
     if min_price and max_price and size_filter:
         variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter, price__gte=min_price,
                                                  price__lte=max_price)
 
     elif min_price and max_price:
-        variants = ProductVariant.objects.filter(price__gte=min_price, price__lte=max_price)
+        variants = ProductVariant.objects.filter(price__gte=min_price, price__lte=max_price, product__in=products)
 
     elif size_filter:
         variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter)
@@ -195,19 +210,36 @@ def change_user_password(request):
 
 
 def search_product(request):
+    categories = CategoryTable.objects.all()
+    size = Size.objects.all()
+    brands = Brands.objects.all()
+    products = ProductTable.objects.all()
     if request.method == 'POST':
-        item_name = request.POST['item_name']
-        print(item_name, type(item_name))
-        products = ProductTable.objects.filter(name__icontains=item_name)
-        variants = []
+        item_name = request.POST.get('item_name')
+        if item_name:
+            # Search by product name using case-insensitive search
+            products = products.filter(Q(name__icontains=item_name))
 
-        for product in products:
-            variant = ProductVariant.objects.filter(product=product).first()
-            variants.append(variant)
+        size_filter = request.POST.getlist('size')
+        brand_filter = request.POST.getlist('brand')
+        min_price = request.POST.get('min_price')
+        max_price = request.POST.get('max_price')
 
-        size = Size.objects.all()
-        brands = Brands.objects.all()
-        categories = CategoryTable.objects.all()
+        if brand_filter:
+            products = products.filter(brandName__name__in=brand_filter)
+
+        if min_price and max_price and size_filter:
+            variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter,
+                                                     price__gte=min_price, price__lte=max_price)
+
+        elif min_price and max_price:
+            variants = ProductVariant.objects.filter(product__in=products, price__gte=min_price, price__lte=max_price)
+
+        elif size_filter:
+            variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter)
+
+        else:
+            variants = [ProductVariant.objects.filter(product=product).first() for product in products]
 
         paginator = Paginator(variants, 9)  # Show 9 variants per page
 
@@ -226,9 +258,10 @@ def search_product(request):
             'page_obj': page_obj,
         }
 
-        return render(request, 'homepage/search-product.html', context)
+        return render(request, 'homepage/shop.html', context)
 
-    return redirect('home')
+    return render(request, 'homepage/shop.html',
+                  {'categories': categories, 'products': products, 'size': size, 'brands': brands})
 
 
 def user_wallet(request):

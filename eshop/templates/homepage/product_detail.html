@@ -142,6 +142,11 @@
                             {% endwith %}
                         {% endwith %}
                     {% endif %}
+                    {% if variants.product.is_active == 'False' %}
+                    <h1 class="mb-4" style="color:red;">OUT OF STOCK</h1>
+                    {% elif variants.stock < 1 %}
+                    <h1 class="mb-4" style="color:red;">OUT OF STOCK</h1>
+                    {% endif %}
                     <p class="mb-4">{{ variants.product.description }}</p>
                     <div class="d-flex mb-4">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>

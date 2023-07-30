@@ -17,6 +17,8 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.utils import timezone
 import datetime
 
+from django.views.decorators.cache import cache_control
+
 from eshop import settings
 
 
@@ -169,6 +171,7 @@ def otp_login(request):
     return render(request, 'accounts/otpLogin.html')
 
 
+@cache_control(no_cache=True, must_validate=True, no_store=True)
 def home(request):
     return render(request, 'homepage/home.html')
 

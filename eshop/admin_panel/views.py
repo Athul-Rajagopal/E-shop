@@ -1,9 +1,16 @@
+from datetime import timedelta, datetime
+
+from _decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q, Sum, Count
+from django.db.models.functions import TruncDate
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from store.models import CategoryTable, ProductTable, ProductVariant, Brands, Size, VariantImage
+from django.utils import timezone
+from store.models import *
 from orders.models import *
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
@@ -14,7 +21,7 @@ from cart.models import Coupon
 # Create your views here.
 def admin_login(request):
     if request.user.is_superuser and request.user.is_authenticated:
-        return render(request, 'admin_panel/adminHome.html')
+        return redirect('admin_home')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['pass1']
@@ -32,10 +39,168 @@ def admin_login(request):
 
 
 def home(request):
-    last_orders = Order.objects.order_by('-order_date')[:5]
+    if request.method == 'GET':
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        if not start_date and not end_date:
+            # Calculate the current date
+            current_date = timezone.now().date()
 
-    return render(request, 'admin_panel/adminHome.html', {
-        'last_orders': last_orders})
+            # Calculate the date 30 days back from the current date
+            default_start_date = current_date - timedelta(days=30)
+            default_end_date = current_date
+
+            # Convert to string format (YYYY-MM-DD)
+            start_date = default_start_date.strftime('%Y-%m-%d')
+            end_date = default_end_date.strftime('%Y-%m-%d')
+
+        if start_date and end_date:
+            order_count_date = Order.objects.filter(
+                Q(order_date__date__gte=start_date, order_date__date__lte=end_date) |
+                Q(order_date__date=end_date, order_date__time__isnull=True)
+            ).exclude(payment_status='CANCELLED').count()
+
+            total_price_date = Order.objects.filter(
+                Q(order_date__date__gte=start_date, order_date__date__lte=end_date) |
+                Q(order_date__date=end_date, order_date__time__isnull=True)
+            ).exclude(payment_status='CANCELLED').aggregate(total=Sum('total_price'))['total']
+
+            daily_totals = Order.objects.filter(
+                Q(order_date__date__gte=start_date, order_date__date__lte=end_date) |
+                Q(order_date__date=end_date, order_date__time__isnull=True)
+            ).exclude(payment_status='CANCELLED').annotate(date=TruncDate('order_date')).values('date').annotate(
+                total=Sum('total_price')).order_by('date')
+            order_count = Order.objects.exclude(payment_status='CANCELLED').count()
+            total_price = Order.objects.exclude(payment_status='CANCELLED').aggregate(total=Sum('total_price'))['total']
+            today = timezone.now().date()
+            today_orders = Order.objects.filter(order_date__date=today)
+            order_count_today = today_orders.count()
+            total_price_today = sum(order.total_price for order in today_orders)
+            recent_orders = Order.objects.order_by('-order_date')[:3]
+            top_selling_products = OrderItem.objects.values('product__product__name').annotate(
+                total_quantity=Count('product')
+            ).order_by('-total_quantity')[:5]
+
+            categories = CategoryTable.objects.all()
+            data = []
+
+            for category in categories:
+                product_count = ProductTable.objects.filter(category=category).count()
+                data.append(product_count)
+
+            context = {
+                'order_count_date': order_count_date,
+                'total_price_date': total_price_date,
+                'start_date': start_date,
+                'end_date': end_date,
+                'daily_totals': daily_totals,
+                'order_count': order_count,
+                'total_price': total_price,
+                'categories': categories,
+                'data': data,
+                'order_count_today': order_count_today,
+                'total_price_today': total_price_today,
+                'recent_orders': recent_orders,
+                'top_selling_products': top_selling_products,
+
+            }
+
+            return render(request, 'admin_panel/adminHome.html', context)
+
+        else:
+            order_count = Order.objects.exclude(payment_status='CANCELLED').count()
+            total_price = Order.objects.exclude(payment_status='CANCELLED').aggregate(total=Sum('total_price'))['total']
+
+            today = timezone.now().date()
+            today_orders = Order.objects.filter(order_date__date=today)
+            order_count_today = today_orders.count()
+            total_price_today = sum(order.total_price for order in today_orders)
+
+            categories = CategoryTable.objects.all()
+            data = []
+
+            for category in categories:
+                product_count = ProductTable.objects.filter(category=category).count()
+                data.append(product_count)
+
+            recent_orders = Order.objects.order_by('-order_date')[:5]
+            top_selling_products = OrderItem.objects.values('product__product__name').annotate(
+                total_quantity=Count('product')).order_by('-total_quantity')[:5]
+
+            context = {
+                'order_count': order_count,
+                'total_price': total_price,
+                'start_date': start_date,
+                'end_date': end_date,
+                'order_count_today': order_count_today,
+                'total_price_today': total_price_today,
+                'categories': categories,
+                'data': data,
+                'recent_orders': recent_orders,
+                'top_selling_products': top_selling_products,
+            }
+
+            return render(request, 'admin_panel/adminHome.html', context)
+
+    return HttpResponseBadRequest("Invalid request method.")
+
+
+def download_sales_report(request):
+    today = datetime.today()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+
+    # Today's totals
+    today_orders = Order.objects.filter(order_date__date=today)
+    order_count_today = today_orders.count()
+    total_price_today = today_orders.aggregate(Sum('total_price'))['total_price__sum']
+
+    # Weekly totals
+    week_orders = Order.objects.filter(order_date__date__range=[week_ago, today])
+    order_count_week = week_orders.count()
+    total_price_week = week_orders.aggregate(Sum('total_price'))['total_price__sum']
+
+    # Monthly totals
+    month_orders = Order.objects.filter(order_date__date__range=[month_ago, today])
+    order_count_month = month_orders.count()
+    total_price_month = month_orders.aggregate(Sum('total_price'))['total_price__sum']
+
+    # Top selling products
+    top_selling_products_today = OrderItem.objects.values('product__product__name').annotate(
+        total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+    top_selling_products_week = OrderItem.objects.filter(order_id__order_date__date__range=[week_ago, today]).values(
+        'product__product__name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+    top_selling_products_month = OrderItem.objects.filter(order_id__order_date__date__range=[month_ago, today]).values(
+        'product__product__name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+
+    context = {
+        'order_count_today': order_count_today,
+        'total_price_today': total_price_today,
+        'order_count_week': order_count_week,
+        'total_price_week': total_price_week,
+        'order_count_month': order_count_month,
+        'total_price_month': total_price_month,
+        'top_selling_products_today': top_selling_products_today,
+        'top_selling_products_week': top_selling_products_week,
+        'top_selling_products_month': top_selling_products_month,
+    }
+
+    # Render the HTML content using the 'sales.html' template and the provided context
+    html_content = render_to_string('admin_panel/sales-report.html', context)
+
+    # Set the response content type as 'application/pdf' to indicate that it's a PDF file
+    response = HttpResponse(content_type='application/pdf')
+
+    # Set the filename for the downloaded file
+    response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
+
+    # Generate the PDF content from the HTML using xhtml2pdf
+    pdf = pisa.pisaDocument(BytesIO(html_content.encode("UTF-8")), response)
+
+    if pdf.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
 
 
 def userdetails(request):
@@ -141,7 +306,10 @@ def add_product(request):
             category = request.POST['category']
             brand = request.POST['brand']
             description = request.POST['description']
-
+            discount_percent = request.POST['discount']
+            if discount_percent < 0:
+                messages.error(request, 'enter a valid discount')
+                return redirect('add_product')
             # variant side
             size = request.POST['size']
             price = request.POST['price']
@@ -157,7 +325,7 @@ def add_product(request):
             size_id = Size.objects.get(id=size)
 
             product = ProductTable.objects.create(name=product_name, description=description, category=category_id,
-                                                  brandName=brand_id)
+                                                  brandName=brand_id,discount_percent=discount_percent)
             product.save()
             product_variant = ProductVariant.objects.create(product=product, size=size_id, price=price, stock=stock,
                                                             display_image=variant_image)
@@ -209,6 +377,7 @@ def edit_product(request, product_id):
             category = request.POST['category']
             brand = request.POST['brand']
             description = request.POST['description']
+            discount_percent = request.POST['discount']
 
             category_id = CategoryTable.objects.get(name=category)
             brand_id = Brands.objects.get(name=brand)
@@ -217,6 +386,7 @@ def edit_product(request, product_id):
             product.category = category_id
             product.brandName = brand_id
             product.description = description
+            product.discount_percent = discount_percent
 
             product.save()
             return redirect('products')
@@ -314,15 +484,16 @@ def edit_variant(request, variant_id):
             stock = request.POST['stock']
             size = request.POST['size']
             price = request.POST['price']
-            variant_image = request.FILES['variant_image']
+            variant_image = request.FILES.get('variant_image')
             variant_images = request.FILES.getlist('variant_images')
 
             size_id = Size.objects.get(size=size)
 
-            variant.stock = stock
+            variant.stock += int(stock)
             variant.size = size_id
             variant.price = price
-            variant.display_image = variant_image
+            if variant_image:
+                variant.display_image = variant_image
             variant.save()
             if variant_images:
                 VariantImage.objects.filter(product_variant=variant).delete()
@@ -457,3 +628,25 @@ def edit_coupon(request, coupon_id):
             return redirect('coupons')
 
         return render(request, 'admin_panel/edit-coupon.html', {'coupon': coupon})
+
+
+def user_order_returned(request, order_id):
+    if request.user.is_superuser:
+        order = Order.objects.get(id=order_id)
+        user = order.user
+        try:
+            get_wallet = UserWallet.objects.get(user=user)
+            get_wallet.wallet_amount = get_wallet.wallet_amount + Decimal(str(order.total_price))
+            get_wallet.save()
+            order.delete()
+            # order.payment_status = 'RETURNED'
+            # order.save()
+        except ObjectDoesNotExist:
+            user_wallet = UserWallet.objects.create(user=user, wallet_amount=order.total_price)
+            user_wallet.save()
+            # order.payment_status = 'RETURNED'
+            # order.save()
+
+        return redirect('orders')
+
+    return render(request, 'admin_panel/orders.html')

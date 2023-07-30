@@ -130,13 +130,6 @@ Cart
             <div class="col-lg-4">
                 <form class="mb-30" action="{% url 'apply_coupon' %}" method="post">{% csrf_token %}
                     <div class="input-group">
-<!--                        {% if coupons %}-->
-<!--                        <select>-->
-<!--                            {% for coupon in coupons %}-->
-<!--                            <option>{{coupon.coupon_code}}</option>-->
-<!--                            {% endfor %}-->
-<!--                        </select>-->
-<!--                        {% endif %}-->
                         <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code" name="coupon">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-primary">Apply Coupon</button>

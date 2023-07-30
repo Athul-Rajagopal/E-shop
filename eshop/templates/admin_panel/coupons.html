@@ -28,7 +28,7 @@ Product
                       <th scope="col">Expiry date </th>
                       <th scope="col">Discounted amount</th>
                       <th scope="col">Minimum purchase amount</th>
-                      <th scope="col">Disable</th>
+                      <th scope="col">Status</th>
                       <th scope="col">Edit</th>
                     </tr>
                   </thead>
@@ -41,9 +41,16 @@ Product
                       <td>{{ coupon.discount_price }}</td>
                       <td>{{ coupon.minimum_amount }}</td>
                       <td>
+                        {% if coupon.is_expired %}
                         <div >
-                            <a href="#" class="btn btn-danger">Delete</a>
+                            <p>Expired</p>
                         </div>
+                        {% else %}
+                        <div >
+                            <p>Active</p>
+                        </div>
+                        {% endif %}
+
                       </td>
 
                       <td>

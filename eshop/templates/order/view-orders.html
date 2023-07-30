@@ -96,6 +96,8 @@ orders
                     <a href="{% url 'return_order' order.id %}">
                       <button class="btn btn-sm btn-primary">Return</button>
                     </a>
+                  {% elif order.payment_status == 'RETURNED' %}
+                    <p>RETURN REQUESTED</p>
                   {% else %}
                       <button class="btn btn-sm btn-danger btn-cancel" data-order-id="{{ order.id }}">Cancel</button>
                   {% endif %}

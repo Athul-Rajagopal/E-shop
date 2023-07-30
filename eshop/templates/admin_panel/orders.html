@@ -47,7 +47,9 @@ Orders
                                 </td>
                                 <td class="align-middle">
                                     {% if order.payment_status == 'DELIVERED' %}
-                                    <a href="{% url 'return_order' order.id %}">
+                                    <p>DELIVERED</p>
+                                    {% elif order.payment_status == 'RETURNED' %}
+                                    <a href="{% url 'user_order_returned' order.id %}">
                                       <button class="btn btn-sm btn-primary">Return</button>
                                     </a>
                                     {% else %}

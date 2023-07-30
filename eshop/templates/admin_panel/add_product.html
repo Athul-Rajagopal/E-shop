@@ -4,6 +4,15 @@
 Product
 {% endblock %}
 {% block content %}
+    {% for message in messages %}
+
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+        <strong>Message</strong>  {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
 {% block name %}
 <a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
 {% endblock %}
@@ -57,6 +66,10 @@ Product
     <div class="formbold-textarea">
         <textarea rows="6" name="description"  class="formbold-form-input"></textarea>
         <label  class="formbold-form-label"> Description </label>
+    </div>
+    <br>
+    <div >
+        <input type="number" name="discount"  class="form-input"> Discount in percent</input>
     </div>
     <br>
     <h5>ADD VARIANTS</h5>

@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('_admin', views.admin_login, name='admin_login'),
     path('admin-home', views.home, name='admin_home'),
+    path('sales-report', views.download_sales_report, name='download_sales_report'),
     path('user-details', views.userdetails, name='user_details'),
     path('block-user/<int:id>/', views.block_user, name='block_user'),
     path('unblock-user/<int:id>/', views.unblock_user, name='unblock_user'),
@@ -31,5 +32,6 @@ urlpatterns = [
     path('change-status/<int:order_id>', views.change_status, name='change_status'),
     path('add-coupon', views.add_coupon, name='add_coupon'),
     path('coupons', views.list_coupon, name='coupons'),
-    path('edit-coupon/<int:coupon_id>', views.edit_coupon, name='edit_coupon')
+    path('edit-coupon/<int:coupon_id>', views.edit_coupon, name='edit_coupon'),
+    path('user-order-returned/<int:order_id>', views.user_order_returned, name='user_order_returned')
 ]

@@ -35,13 +35,13 @@ def cart(request):
             'cart': cart_item,
             'user_cart': user_cart,
             'categories': categories,
-            'total_price':total_price,
-            'coupons':coupons
+            'total_price': total_price,
+            'coupons': coupons
 
         }
         return render(request, 'cart/cart.html', context)
     else:
-        return render(request, 'cart/cart.html')
+        return redirect('signin')
 
 
 def add_to_cart(request, variant_id):
@@ -62,9 +62,12 @@ def add_to_cart(request, variant_id):
 
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(cart=cart, variant=variant,
-                                                price=variant.price - (variant.price * variant.product.discount_percent) / 100)
+                                                price=variant.price - (
+                                                        variant.price * variant.product.discount_percent) / 100)
             cart_item.save()
         return redirect('cart')
+    else:
+        return redirect('signin')
 
 
 def remove_cart_item(request, id):
@@ -80,7 +83,8 @@ def quantity_update(request, cart_item_id):
             quantity = request.POST.get('quantity')
             cart_item = CartItem.objects.get(id=cart_item_id)
             product_variant = cart_item.variant
-            discount_price = product_variant.price-(product_variant.price * product_variant.product.discount_percent)/100
+            discount_price = product_variant.price - (
+                    product_variant.price * product_variant.product.discount_percent) / 100
 
             if int(quantity) <= product_variant.stock:
                 cart_item.quantity = int(quantity)
@@ -112,7 +116,7 @@ def wishlist(request):
         }
         return render(request, 'cart/wishlist.html', context)
     else:
-        return redirect('home')
+        return redirect('signin')
 
 
 def add_to_wishlist(request, variant_id):
@@ -121,21 +125,14 @@ def add_to_wishlist(request, variant_id):
         user = request.user
         cart, _ = Cart.objects.get_or_create(user=user)
 
-        # try:
-        #     wishlist_item = WishList.objects.get(wishlist=cart, variant=variant)
-        #     if wishlist_item.quantity < variant.stock:
-        #         wishlist_item.quantity += 1
-        #         wishlist_item.price = wishlist_item.get_item_price()
-        #         wishlist_item.save()
-        #
-        #     else:
-        #         messages.warning(request,'stock limit reached')
-
         # except WishList.DoesNotExist:
         wishlist_item = WishList.objects.create(wishlist=cart, variant=variant,
-                                                price=variant.price - (variant.price * variant.product.discount_percent) / 100)
+                                                price=variant.price - (
+                                                        variant.price * variant.product.discount_percent) / 100)
         wishlist_item.save()
         return redirect('wishlist')
+    else:
+        return redirect('signin')
 
 
 def remove_wishlist_item(request, id):
@@ -159,59 +156,51 @@ def wishlist_to_cart(request, item_id):
     return redirect('cart')
 
 
-# def quantity_update_wishlist(request, cart_item_id):
-#     if request.method == 'POST':
-#         quantity = request.POST.get('quantity')
-#         wishlist_item = WishList.objects.get(id=cart_item_id)
-#         product_variant = wishlist_item.variant
-#
-#         if int(quantity) <= product_variant.stock:
-#             wishlist_item.quantity = int(quantity)
-#             wishlist_item.price = product_variant.price * int(quantity)
-#             wishlist_item.save()
-#             print("Cart item updated successfully.")
-#         else:
-#             print("Requested quantity exceeds available stock.")
-#     return redirect('wishlist')
-
-
 def apply_coupon(request):
     if request.user.is_authenticated:
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=cart)
 
         total_price = sum(cart_item.price for cart_item in cart_items)
-        discount_price = 0
-
+        print("###########################")
         if request.method == 'POST':
             coupon_code = request.POST.get('coupon')
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$', coupon_code)
             try:
+                print("^^^^^^^^^^^^^^^^^^^^^^^^")
                 coupon = Coupon.objects.get(coupon_code=coupon_code, is_expired=False, minimum_amount__lte=total_price)
-
+                print("^^^^^^^^^^^^^^^^^^^^^", coupon.id)
+                print("^^^^^^^^^^^^^^^^^^^^^", coupon.discount_price)
                 # Add a new condition to check if the user has already applied the coupon
                 user_coupon = UserCoupon.objects.filter(user=request.user, coupon=coupon.id).first()
+                print(user_coupon)
                 if user_coupon is None:
                     # User has not already applied the coupon
-                    user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
-                    user_coupon.save()
+                    cart.coupon = coupon.id
+                    # cart.save()
+                    # print("#############################",cart.coupon)
                     total_price -= coupon.discount_price
                     cart.total_price = total_price
+                    print("total_....................................price")
+
+                    print(total_price)
                     cart.save()
 
                 else:
                     coupon_status = 'already_used'  # Set the coupon status as 'already_used'
                     print("already used this coupon for this user")
                     # User has already applied the coupon
-            except:
-                pass
+            except Coupon.DoesNotExist:
+                coupon_status = 'invalid'  # Set the coupon status as 'invalid'
+                # Coupon not valid
 
         categories = CategoryTable.objects.all()
         context = {
             'categories': categories,
             'cart': cart_items,
             'user_cart': cart,
-            'total_price': total_price
+            'total_price': total_price,
+            'coupon_status': coupon_status,
 
         }
         return render(request, 'cart/cart.html', context)
-

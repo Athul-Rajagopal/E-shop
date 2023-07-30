@@ -56,40 +56,32 @@ home
                     </div>
                 </nav>
                 <div id="header-carousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active" style="height: 410px;">
-                            <img class="img-fluid" src="{% static 'image/carousal1.webp' %}" alt="Image">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">MEN'S WEAR</h3>
-                                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item" style="height: 410px;">
-                            <img class="img-fluid" src="{% static 'img/slide2.jpg' %}" alt="Image">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
-                                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-                                </div>
+                <div class="carousel-inner">
+                    {% for product in products_with_offers %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}" style="height: 410px;">
+                        <img class="img-fluid" src="{{ product.banner.image.url }}" alt="{{ product.name }}">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h4 class="text-light text-uppercase font-weight-medium mb-3">{{ product.discount_percent }}% OFF</h4>
+                                <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{ product.name }}</h3>
+                                <a href="{{ product.variant.get_absolute_url }}" class="btn btn-light py-2 px-3">Shop Now</a>
                             </div>
                         </div>
                     </div>
-                    <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
-                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
-                            <span class="carousel-control-prev-icon mb-n2"></span>
-                        </div>
-                    </a>
-                    <a class="carousel-control-next" href="#header-carousel" data-slide="next">
-                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
-                            <span class="carousel-control-next-icon mb-n2"></span>
-                        </div>
-                    </a>
+                    {% endfor %}
                 </div>
+                <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+                    <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                        <span class="carousel-control-prev-icon mb-n2"></span>
+                    </div>
+                </a>
+                <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+                    <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                        <span class="carousel-control-next-icon mb-n2"></span>
+                    </div>
+                </a>
             </div>
+
         </div>
     </div>
     <!-- Navbar End -->
@@ -150,6 +142,63 @@ home
     </div>
 
     <!-- Categories End -->
+    <!--    New arrivals-->
+    <div id="newArrivalsCarousel" class="carousel slide container-fluid pt-5" data-ride="carousel">
+    <div class="text-center mb-4">
+        <h2 class="section-title px-5"><span class="px-2">New Arrivals</span></h2>
+    </div>
+
+    <!-- Wrapper for carousel items -->
+   <div class="row px-xl-5 pb-3">
+        {% for variant in variants %}
+        {% if forloop.counter <= 3 %}
+        <div class="col-lg-4 col-md-6 pb-1">
+            <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
+                <a href="{{ variant.get_absolute_url }}" class="cat-img position-relative overflow-hidden mb-3">
+                    <img class="h-100 img-fluid" src="{{ variant.display_image.url }}" alt="{{ variant.product.name }}">
+                </a>
+                <h5 class="font-weight-semi-bold m-0">{{ variant.product.name }}</h5>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if variants|length > 3 %}
+    <!-- Carousel for extra variants -->
+    <div id="extraVariantsCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% for variant in variants %}
+            {% if forloop.counter > 3 %}
+            <div class="carousel-item {% if forloop.counter == 4 %}active{% endif %}">
+                <div class="row px-xl-5 pb-3">
+                    <div class="col-lg-4 col-md-6 pb-1">
+                        <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
+                            <a href="{{ variant.get_absolute_url }}" class="cat-img position-relative overflow-hidden mb-3">
+                                <img class="h-100 img-fluid" src="{{ variant.display_image.url }}" alt="{{ variant.product.name }}">
+                            </a>
+                            <h5 class="font-weight-semi-bold m-0">{{ variant.product.name }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Controls -->
+        <a class="carousel-control-prev" href="#extraVariantsCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#extraVariantsCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
 {% endblock %}
     <!-- Featured End -->
 

@@ -14,6 +14,7 @@ class Order(models.Model):
         ('CANCELLED', 'cancelled'),
         ('DELIVERED', 'Delivered'),
         ('SHIPPED', 'Shipped'),
+        ('RETURNED', 'Returned'),
     ]
     PAYMENT_METHOD_CHOICES = [
         ('RAZORPAY', 'razorpay'),

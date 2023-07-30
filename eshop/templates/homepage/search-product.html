@@ -99,195 +99,132 @@ Shop
 <!-- Shop Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
-        <!-- Shop Sidebar Start -->
-        <div class="col-lg-3 col-md-12">
-            <!-- Price Start -->
-            <div class="border-bottom mb-4 pb-4">
-                <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
-                <form>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" checked id="price-all">
-                        <label class="custom-control-label" for="price-all">All Price</label>
-                        <span class="badge border font-weight-normal">1000</span>
-                    </div>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" id="price-1">
-                        <label class="custom-control-label" for="price-1">$0 - $100</label>
-                        <span class="badge border font-weight-normal">150</span>
-                    </div>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" id="price-2">
-                        <label class="custom-control-label" for="price-2">$100 - $200</label>
-                        <span class="badge border font-weight-normal">295</span>
-                    </div>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" id="price-3">
-                        <label class="custom-control-label" for="price-3">$200 - $300</label>
-                        <span class="badge border font-weight-normal">246</span>
-                    </div>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" id="price-4">
-                        <label class="custom-control-label" for="price-4">$300 - $400</label>
-                        <span class="badge border font-weight-normal">145</span>
-                    </div>
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                        <input type="checkbox" class="custom-control-input" id="price-5">
-                        <label class="custom-control-label" for="price-5">$400 - $500</label>
-                        <span class="badge border font-weight-normal">168</span>
-                    </div>
-                </form>
-            </div>
-            <!-- Price End -->
+       <div class="col-lg-3 col-md-12">
 
-
-
-            <!-- Size Start -->
+            <!-- Filter Start -->
             <div class="mb-5">
-                <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
-                <form>
+                <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="number" class="form-control" id="minPriceInput" name="min_price" placeholder="Min Price">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" id="maxPriceInput" name="max_price" placeholder="Max Price">
+                        </div>
+                    </div>
+                    <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
                     {% for size in size %}
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" id="size-1">
-                        <label class="custom-control-label" for="size-1">{{size.size}}</label>
-                        <!-- <span class="badge border font-weight-normal">150</span> -->
+                        <input type="checkbox" class="custom-control-input" id="size-{{ forloop.counter }}" name="size" value="{{ size.size }}">
+                        <label class="custom-control-label" for="size-{{ forloop.counter }}">{{size.size}}</label>
                     </div>
                     {% endfor %}
-                </form>
-            </div>
-            <!-- Size End -->
-            <!-- brand -->
-            <div class="mb-5">
-                <h5 class="font-weight-semi-bold mb-4">Filter by Brand</h5>
-                <form>
+                    <h5 class="font-weight-semi-bold mb-4">Filter by Brand</h5>
                     {% for brand in brands %}
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" >
-                        <label class="custom-control-label">{{brand.name}}</label>
-                        <!-- <span class="badge border font-weight-normal">150</span> -->
+                        <input type="checkbox" class="custom-control-input" id="brand-{{ forloop.counter }}" name="brand" value="{{ brand.name }}" >
+                        <label class="custom-control-label" for="brand-{{ forloop.counter }}">{{brand.name}}</label>
                     </div>
                     {% endfor %}
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
                 </form>
             </div>
-
+            <!-- Filter End -->
 
         </div>
         <!-- Shop Sidebar End -->
  <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-12">
             <div class="row pb-3">
-                <div class="col-12 pb-1">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <form action="">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search by name">
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-transparent text-primary">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="dropdown ml-4">
-                            <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                        Sort by
-                                    </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
-                                <a class="dropdown-item" href="#">Latest</a>
-                                <a class="dropdown-item" href="#">Popularity</a>
-                                <a class="dropdown-item" href="#">Best Rating</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- test -->
                 <div class="row px-xl-5 pb-3">
-    {% for variant in page_obj %}
-    <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-        <div class="card product-item border-0 mb-4">
-            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                <a href="{{ variant.get_absolute_url }}">
-                    <img class="w-100 h-100 img-fluid-shop" src="{{ variant.display_image.url }}" alt="">
-                </a>
-            </div>
-            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                <h6 class="text-truncate mb-3">{{ variant.product.name }}</h6>
-                <div class="d-flex justify-content-center">
-                    <h6>{{ variant.price }}</h6>
-                    <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                </div>
-            </div>
-            <div class="card-footer d-flex justify-content-between bg-light border"></div>
-            {% if variant.product.is_active == 'False' %}
-                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                    <p><b>OUT OF STOCK</b></p>
-                </div>
-            {% elif variant.stock < 1 %}
-                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                    <p><b>OUT OF STOCK</b></p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+                    {% for variant in page_obj %}
+                    <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <a href="{{ variant.get_absolute_url }}">
+                                    <img class="w-100 h-100 img-fluid-shop" src="{{ variant.display_image.url }}" alt="">
+                                </a>
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3">{{ variant.product.name }}</h6>
+                                <div class="d-flex justify-content-center">
+                                    <h6>{{ variant.price }}</h6>
+                                    <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border"></div>
+                            {% if variant.product.is_active == 'False' %}
+                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                    <p><b>OUT OF STOCK</b></p>
+                                </div>
+                            {% elif variant.stock < 1 %}
+                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                    <p><b>OUT OF STOCK</b></p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
 
-    {% if forloop.counter|divisibleby:4 and not forloop.last %}
-        </div>
-        <div class="row px-xl-5 pb-3">
-    {% endif %}
-{% endfor %}
-</div>
-
-
+                    {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                        </div>
+                        <div class="row px-xl-5 pb-3">
+                    {% endif %}
+                {% endfor %}
+                </div>
 
 
                 <!-- test -->
- <div class="col-12 pb-1">
-            <!-- Render the pagination links -->
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mb-3">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </li>
-                    {% endif %}
+             <div class="col-12 pb-1">
+                        <!-- Render the pagination links -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center mb-3">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </li>
+                                {% endif %}
 
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if page_obj.number == num %}
-                            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
-                        {% else %}
-                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                        {% endif %}
-                    {% endfor %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
 
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
 <!-- Shop Product End -->
     </div>
 </div>
+
 
 {% endblock %}
 
