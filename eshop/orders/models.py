@@ -19,6 +19,7 @@ class Order(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ('RAZORPAY', 'razorpay'),
         ('CASH_ON_DELIVERY', 'Cash on Delivery'),
+        ('PAY USING WALLET', 'pay using wallet')
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(UserAddress, on_delete=models.CASCADE)

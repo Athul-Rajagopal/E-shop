@@ -70,9 +70,17 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{% url 'category' %}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-article"></i>
+                                    <i class="ti ti-folder"></i>
                                 </span>
                                 <span class="hide-menu">CATEGOREY</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'brands' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-tag"></i>
+                                </span>
+                                <span class="hide-menu">BRANDS</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
@@ -86,7 +94,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{% url 'products' %}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-cards"></i>
+                                    <i class="ti ti-package"></i>
                                 </span>
                                 <span class="hide-menu">PRODUCTS</span>
                             </a>
@@ -143,12 +151,6 @@
                                 <i class="ti ti-menu-2"></i>
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link nav-icon-hover" href="javascript:void(0)">
-                                <i class="ti ti-bell-ringing"></i>
-                                <div class="notification bg-primary rounded-circle"></div>
-                            </a>
-                        </li> -->
                     </ul>
                     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
@@ -166,13 +168,12 @@
             {% block content %}
             {% endblock %}
 
-            <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
-          <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-          <script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
-          <script src="{% static 'assets/js/app.min.js' %}"></script>
-<!--          <script src="{% static 'assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>-->
-          <script src="{% static 'assets/libs/simplebar/dist/simplebar.js' %}"></script>
-          <script src="{% static 'assets/js/dashboard.js' %}"></script>
+<script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script src="{% static 'assets/libs/simplebar/dist/simplebar.js' %}"></script>
+<script src="{% static 'assets/js/dashboard.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>

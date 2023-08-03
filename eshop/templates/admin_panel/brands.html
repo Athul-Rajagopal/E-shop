@@ -1,0 +1,67 @@
+{%extends 'admin_panel/adminbase.html'%}
+{% load static %}
+{% block title %}
+category
+{% endblock %}
+{% block content %}
+
+{% block name %}
+<a href="" target="_blank" class="btn btn-primary">{{request.user}}</a>
+{% endblock %}
+
+<div class="container-fluid">
+    <div class="container-fluid">
+      <div class="content-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">CATEGOREY</h5>
+          <table class="table">
+
+            <thead>
+              <tr>
+                <th scope="col">no.</th>
+                <th scope="col">Brand</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for brand in brands %}
+              <tr>
+                <th scope="row">{{brand.id}}</th>
+                <td>{{brand.name}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+   </div>
+  <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="content-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">Add Brand</h5>
+          <div class="card">
+            <div class="card-body">
+              <form action="{% url 'add_brand' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Brand Name</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="brand">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -143,6 +143,17 @@ Cart
                             <h6>total price</h6>
                             <h6>{{total_price}}</h6>
                         </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h6>Coupon applied</h6>
+                            {% if used_coupon %}
+                            <h6>{{used_coupon.coupon_code}}</h6>
+                            {% else %}
+                            <h6>None</h6>
+                            {% endif %}
+                        </div>
+
+
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
                             <h6 class="font-weight-medium">$0</h6>

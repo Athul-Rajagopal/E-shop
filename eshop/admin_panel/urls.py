@@ -33,5 +33,7 @@ urlpatterns = [
     path('add-coupon', views.add_coupon, name='add_coupon'),
     path('coupons', views.list_coupon, name='coupons'),
     path('edit-coupon/<int:coupon_id>', views.edit_coupon, name='edit_coupon'),
-    path('user-order-returned/<int:order_id>', views.user_order_returned, name='user_order_returned')
+    path('user-order-returned/<int:order_id>', views.user_order_returned, name='user_order_returned'),
+    path('add-brand', views.add_brand, name='add_brand'),
+    path('brands', views.brands, name='brands')
 ]

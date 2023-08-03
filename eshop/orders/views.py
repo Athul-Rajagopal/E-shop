@@ -58,59 +58,67 @@ def add_address(request):
 
 
 def checkout(request, address_id):
-    if request.user.is_authenticated:
+    cart = Cart.objects.get(user=request.user)
+    user_wallet = UserWallet.objects.get(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    if cart_items:
+        if request.user.is_authenticated:
+            user_details = UserAddress.objects.get(id=address_id)
+            user_cart = Cart.objects.get(user=request.user)
+            context = {
+                'details': user_details,
+                'user_cart': user_cart,
+                'wallet':user_wallet
+            }
 
-        user_details = UserAddress.objects.get(id=address_id)
-        user_cart = Cart.objects.get(user=request.user)
-        context = {
-            'details': user_details,
-            'user_cart': user_cart
-        }
+            return render(request, 'order/checkout.html', context)
 
-        return render(request, 'order/checkout.html', context)
-
+    return redirect('home')
 
 
 @cache_control(no_cache=True, must_validate=True, no_store=True)
 def place_order(request, address_id):
+    cart = Cart.objects.get(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    if cart_items:
+        if request.user.is_authenticated:
+            try:
 
-    if request.user.is_authenticated:
-        try:
+                address = UserAddress.objects.get(id=address_id)
+                cart = Cart.objects.get(user=request.user)
+                cart_items = CartItem.objects.filter(cart=cart)
+                # total_price = sum(cart_item.price for cart_item in cart_items)
+                total_price = cart.total_price
+                print("********************************************")
+                print(total_price)
 
-            address = UserAddress.objects.get(id=address_id)
-            cart = Cart.objects.get(user=request.user)
-            cart_items = CartItem.objects.filter(cart=cart)
-            # total_price = sum(cart_item.price for cart_item in cart_items)
-            total_price = cart.total_price
-            print("********************************************")
-            print(total_price)
+                order = Order.objects.create(user=request.user, address=address,
+                                             payment_status='PENDING',
+                                             payment_method='CASH_ON_DELIVERY', total_price=total_price)
 
-            order = Order.objects.create(user=request.user, address=address,
-                                         payment_status='PENDING',
-                                         payment_method='CASH_ON_DELIVERY', total_price=total_price)
+                for items in cart_items:
+                    order_item = OrderItem.objects.create(order=order,
+                                                          product=items.variant,
+                                                          price=items.variant.price,
+                                                          quantity=items.quantity)
+                    variant = items.variant
+                    variant.stock -= items.quantity
+                    variant.save()
+                    order_item.save()
+                if cart.coupon:
+                    coupon = Coupon.objects.get(id=cart.coupon)
+                    user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
+                    user_coupon.save()
+                cart_items.delete()
+                return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
 
-            for items in cart_items:
-                order_item = OrderItem.objects.create(order=order,
-                                                      product=items.variant,
-                                                      price=items.variant.price,
-                                                      quantity=items.quantity)
-                variant = items.variant
-                variant.stock -= items.quantity
-                variant.save()
-                order_item.save()
-            if cart.coupon:
-                coupon = Coupon.objects.get(id=cart.coupon)
-                user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
-                user_coupon.save()
-            cart_items.delete()
-            return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
+            except NoReverseMatch:
+                return HttpResponse('Please select a valid payment method!')
+            except UnboundLocalError:
+                return redirect('checkout')
 
-        except NoReverseMatch:
-            return HttpResponse('Please select a valid payment method!')
-        except UnboundLocalError:
-            return redirect('checkout')
-
-    return redirect('shipping_address')
+        return redirect('shipping_address')
+    return redirect('home')
 
 
 def view_order(request):
@@ -131,7 +139,23 @@ def cancel_order(request, order_id):
             variant = item.product
             variant.stock += item.quantity
             variant.save()
-        order.delete()
+
+        if order.payment_status == 'PENDING':
+            order.payment_status = 'CANCELLED'
+            order.save()
+
+        elif order.payment_status == 'PAID':
+            try:
+                get_wallet = UserWallet.objects.get(user=request.user)
+                get_wallet.wallet_amount = get_wallet.wallet_amount + Decimal(str(order.total_price))
+                get_wallet.save()
+                order.payment_status = 'CANCELLED'
+                order.save()
+            except ObjectDoesNotExist:
+                user_wallet = UserWallet.objects.create(user=request.user, wallet_amount=order.total_price)
+                user_wallet.save()
+                order.payment_status = 'CANCELLED'
+                order.save()
 
         return redirect('view_orders')
 
@@ -246,8 +270,6 @@ def order_invoice(request, order_id):
 
 
 # download the invoice pdf
-
-
 def download_invoice(request, order_id):
     order = Order.objects.get(id=order_id)
     items = order.orderitem_set.all()
@@ -265,3 +287,50 @@ def download_invoice(request, order_id):
     response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="order_invoice.pdf"'
     return response
+
+def wallet_pay(request,address_id):
+    cart = Cart.objects.get(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    if cart_items:
+        if request.user.is_authenticated:
+            try:
+
+                address = UserAddress.objects.get(id=address_id)
+                cart = Cart.objects.get(user=request.user)
+                cart_items = CartItem.objects.filter(cart=cart)
+                # total_price = sum(cart_item.price for cart_item in cart_items)
+                total_price = cart.total_price
+                print("********************************************")
+                print(total_price)
+
+                order = Order.objects.create(user=request.user, address=address,
+                                             payment_status='PAID',
+                                             payment_method='PAY USING WALLET', total_price=total_price)
+
+                for items in cart_items:
+                    order_item = OrderItem.objects.create(order=order,
+                                                          product=items.variant,
+                                                          price=items.variant.price,
+                                                          quantity=items.quantity)
+                    variant = items.variant
+                    variant.stock -= items.quantity
+                    variant.save()
+                    order_item.save()
+                if cart.coupon:
+                    coupon = Coupon.objects.get(id=cart.coupon)
+                    user_coupon = UserCoupon.objects.create(user=request.user, coupon=coupon)
+                    user_coupon.save()
+                cart_items.delete()
+                wallet = UserWallet.objects.get(user=request.user)
+                print('#########################',wallet.wallet_amount)
+                wallet.wallet_amount -= total_price
+                print('#########################', wallet.wallet_amount)
+                return render(request, 'order/order-placed.html', {'order': order, 'order_item': order_item})
+
+            except NoReverseMatch:
+                return HttpResponse('Please select a valid payment method!')
+            except UnboundLocalError:
+                return redirect('checkout')
+
+        return redirect('shipping_address')
+    return redirect('cart')

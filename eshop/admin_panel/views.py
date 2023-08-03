@@ -307,7 +307,7 @@ def add_product(request):
             brand = request.POST['brand']
             description = request.POST['description']
             discount_percent = request.POST['discount']
-            if discount_percent < 0:
+            if int(discount_percent) < 0:
                 messages.error(request, 'enter a valid discount')
                 return redirect('add_product')
             # variant side
@@ -315,29 +315,19 @@ def add_product(request):
             price = request.POST['price']
 
             stock = request.POST['stock']
-            variant_image = request.FILES['variant_image']
+            variant_image = request.FILES.get['variant_image']
             variant_images = request.FILES.getlist('variant_images')
-
-            print(product_name, category, brand, size, price, stock)
 
             category_id = CategoryTable.objects.get(id=category)
             brand_id = Brands.objects.get(id=brand)
             size_id = Size.objects.get(id=size)
 
             product = ProductTable.objects.create(name=product_name, description=description, category=category_id,
-                                                  brandName=brand_id,discount_percent=discount_percent)
+                                                  brandName=brand_id, discount_percent=discount_percent)
             product.save()
             product_variant = ProductVariant.objects.create(product=product, size=size_id, price=price, stock=stock,
                                                             display_image=variant_image)
             product_variant.save()
-
-            # image cropping
-            # cropping = request.POST.get('eshop_productvariant_display_image')
-            # if cropping:
-            #     image = Image.open(variant_image)
-            #     backend = get_backend()
-            #     image = backend.crop(image, *map(float, cropping.split(',')))
-            #     image.save(product_variant.display_image.path)
 
             for image in variant_images:
                 variant_images = VariantImage.objects.create(product_variant=product_variant, display_image=image)
@@ -590,6 +580,9 @@ def add_coupon(request):
             discount_price = request.POST['discount_price']
             expiry_date = request.POST['expiry_date']
             minimum_amount = request.POST['minimum_amount']
+            if int(minimum_amount) <= int(discount_price):
+                messages.error(request, 'enter a valid amount')
+                return redirect('add_coupon')
 
             coupon = Coupon.objects.create(coupon_code=coupon_code, discount_price=discount_price,
                                            expiry_date=expiry_date, minimum_amount=minimum_amount)
@@ -617,6 +610,9 @@ def edit_coupon(request, coupon_id):
             discount_price = request.POST['discount_price']
             expiry_date = request.POST['expiry_date']
             minimum_amount = request.POST['minimum_amount']
+            if int(minimum_amount) <= int(discount_price):
+                messages.error(request, 'enter a valid amount')
+                return redirect('coupons')
 
             coupon = Coupon.objects.get(id=coupon_id)
             coupon.coupon_code = coupon_code
@@ -650,3 +646,18 @@ def user_order_returned(request, order_id):
         return redirect('orders')
 
     return render(request, 'admin_panel/orders.html')
+
+
+def add_brand(request):
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            brand_name = request.POST['brand']
+            new_brand = Brands.objects.create(name=brand_name)
+            new_brand.save()
+            return redirect('brands')
+
+
+def brands(request):
+    if request.user.is_superuser:
+        brand_list = Brands.objects.all()
+        return render(request, 'admin_panel/brands.html', {'brands': brand_list})

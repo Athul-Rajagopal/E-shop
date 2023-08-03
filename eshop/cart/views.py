@@ -36,7 +36,7 @@ def cart(request):
             'user_cart': user_cart,
             'categories': categories,
             'total_price': total_price,
-            'coupons': coupons
+            # 'coupons': coupons
 
         }
         return render(request, 'cart/cart.html', context)
@@ -193,14 +193,16 @@ def apply_coupon(request):
             except Coupon.DoesNotExist:
                 coupon_status = 'invalid'  # Set the coupon status as 'invalid'
                 # Coupon not valid
-
+        used_coupon = Coupon.objects.get(id=cart.coupon)
+        print(used_coupon)
         categories = CategoryTable.objects.all()
         context = {
             'categories': categories,
             'cart': cart_items,
             'user_cart': cart,
             'total_price': total_price,
-            'coupon_status': coupon_status,
+            'used_coupon': used_coupon,
 
         }
         return render(request, 'cart/cart.html', context)
+

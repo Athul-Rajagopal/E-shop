@@ -99,7 +99,7 @@ Checkout
                     <div class="d-flex justify-content-between">
                         <p>{{item.variant}}</p>
                         <p>{{item.price}}</p>
-                        <p>{{item.variant.discount_percent}}%OFF</p>
+                        <p>{{item.variant.product.discount_percent}}%OFF</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -131,15 +131,26 @@ Checkout
                     </div>
                     <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" id="cash-on-delivery-radio" name="payment-method" value="cash-on-delivery">
-                            <label for="cash-on-delivery-radio">Cash on delivery</label>
+                            <input type="radio" id="cash-on-delivery-radio" name="payment-method" value="cash-on-delivery" checked>
+                            <label for="cash-on-delivery-radio">Cash on delivery<i class="fa fa-money" aria-hidden="true"></i></label>
                         </div>
                     </div>
+                    {% if wallet.wallet_amount >= user_cart.total_price %}
+                    <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="wallet-pay-radio" name="payment-method" value="wallet-pay">
+                            <label for="wallet-pay-radio">Pay with wallet</label>
+                        </div>
+                    </div>
+                    {% endif %}
                     <a href="{% url 'place_order' details.id %}" id="place-order-btn">
                         <button class="btn btn-block btn-primary font-weight-bold py-3">Place Order</button>
                     </a>
                     <a href="#" id="next-btn" style="display: none;">
                         <button id="rzp-button1" class="btn btn-block btn-primary font-weight-bold py-3">Next</button>
+                    </a>
+                    <a href="{% url 'wallet_pay' details.id %}" id="wallet-btn" style="display: none;">
+                        <button id="wallet-button" class="btn btn-block btn-primary font-weight-bold py-3">Pay with Wallet</button>
                     </a>
                     </div>
             </div>
@@ -154,18 +165,34 @@ Checkout
     // Get the radio buttons and button elements
     const razorpayRadio = document.getElementById('razorpay-radio');
     const cashOnDeliveryRadio = document.getElementById('cash-on-delivery-radio');
+    const walletPayRadio = document.getElementById('wallet-pay-radio');
     const placeOrderBtn = document.getElementById('place-order-btn');
     const nextBtn = document.getElementById('next-btn');
+    const walletBtn = document.getElementById('wallet-btn');
+
+    placeOrderBtn.disabled = true;
 
     // Add event listeners to the radio buttons
     razorpayRadio.addEventListener('change', function() {
         placeOrderBtn.style.display = 'none';
+        walletBtn.style.display = 'none';
         nextBtn.style.display = 'block';
+        cashOnDeliveryRadio.innerHTML = 'Cash on delivery';
     });
 
     cashOnDeliveryRadio.addEventListener('change', function() {
         placeOrderBtn.style.display = 'block';
         nextBtn.style.display = 'none';
+        walletBtn.style.display = 'none';
+        placeOrderBtn.disabled = false;
+        cashOnDeliveryRadio.innerHTML = 'Cash on delivery <i class="fa fa-money" aria-hidden="true"></i>';
+    });
+
+    walletPayRadio.addEventListener('change', function() {
+    placeOrderBtn.style.display = 'none';
+    walletBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
+    cashOnDeliveryRadio.innerHTML = 'Cash on delivery';
     });
 
 

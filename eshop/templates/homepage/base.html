@@ -66,7 +66,7 @@
                 <form action="{% url 'search_product' %}" method="post">
                     {% csrf_token %}
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products" name="item_name">
+                        <input type="text" class="form-control" placeholder="Search for products" name="item_name" required>
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
                                 <button type="submit"> <i class="fa fa-search" aria-hidden="true" style="color: #F1B709;"></i></button>

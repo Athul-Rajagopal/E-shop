@@ -1,10 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.core.paginator import Paginator
-from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -238,8 +236,8 @@ def search_product(request):
         elif size_filter:
             variants = ProductVariant.objects.filter(product__in=products, size__size__in=size_filter)
 
-        else:
-            variants = [ProductVariant.objects.filter(product=product).first() for product in products]
+        # else:
+        variants = [ProductVariant.objects.filter(product=product).first() for product in products]
 
         paginator = Paginator(variants, 9)  # Show 9 variants per page
 
@@ -258,7 +256,7 @@ def search_product(request):
             'page_obj': page_obj,
         }
 
-        return render(request, 'homepage/shop.html', context)
+        return render(request, 'homepage/search-product.html', context)
 
     return render(request, 'homepage/shop.html',
                   {'categories': categories, 'products': products, 'size': size, 'brands': brands})
