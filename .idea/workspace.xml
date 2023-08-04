@@ -6,173 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f555fa21-1f25-463c-b0cc-36dcfc7e9393" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/admin_panel/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/admin_panel/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/admin_panel/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/admin_panel/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/cart/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/cart/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/eshop/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/eshop/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/orders/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/orders/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/orders/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/autocomplete.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/base.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/changelists.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/dark_mode.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/dashboard.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/forms.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/login.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/nav_sidebar.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/responsive.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/responsive_rtl.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/rtl.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/vendor/select2/LICENSE-SELECT2.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/vendor/select2/select2.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/vendor/select2/select2.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/css/widgets.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/README.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/calendar-icons.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/gis/move_vertex_off.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/gis/move_vertex_on.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-addlink.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-alert.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-calendar.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-changelink.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-clock.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-deletelink.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-no.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-unknown-alt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-unknown.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-viewlink.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/icon-yes.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/inline-delete.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/search.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/selector-icons.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/sorting-icons.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/tooltag-add.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/img/tooltag-arrowright.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/SelectBox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/SelectFilter2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/actions.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/admin/DateTimeShortcuts.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/admin/RelatedObjectLookups.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/autocomplete.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/calendar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/cancel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/change_form.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/collapse.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/core.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/filters.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/inlines.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/jquery.init.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/nav_sidebar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/popup_response.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/prepopulate.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/prepopulate_init.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/theme.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/urlify.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/jquery/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/jquery/jquery.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/jquery/jquery.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/LICENSE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/af.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/az.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/bg.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/bn.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/bs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ca.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/cs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/da.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/de.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/dsb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/el.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/en.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/es.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/et.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/eu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/fa.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/fi.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/fr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/gl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/he.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/hi.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/hr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/hsb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/hu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/hy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/id.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/is.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/it.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ja.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ka.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/km.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ko.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/lt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/lv.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/mk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ms.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/nb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ne.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/nl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/pl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ps.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/pt-BR.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/pt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ro.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/ru.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sq.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sr-Cyrl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/sv.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/th.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/tk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/tr.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/uk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/vi.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/zh-CN.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/i18n/zh-TW.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/select2.full.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/select2/select2.full.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/xregexp/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/xregexp/xregexp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/admin/js/vendor/xregexp/xregexp.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/fonts/tabler-icons.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/fonts/tabler-icons.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/fonts/tabler-icons.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/fonts/tabler-icons.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/fonts/tabler-icons.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/icons/tabler-icons/tabler-icons.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/static/css_admin/styles.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/store/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/store/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/store/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/store/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/store/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/store/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/add-variant.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/add-variant.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/add_product.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/add_product.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/adminHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/adminHome.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/adminbase.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/adminbase.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/category.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/category.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/change-status.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/change-status.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-category.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-category.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-product.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-product.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-variant.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/edit-variant.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/editcategory.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/editcategory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/orders.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/product.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/product.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/user-order-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/user-order-details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/userdetails.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/userdetails.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/admin_panel/view_product.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/admin_panel/view_product.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/homepage/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/homepage/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/homepage/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/homepage/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/homepage/product_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/homepage/product_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/homepage/shop.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/homepage/shop.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/homepage/user-address.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/homepage/user-address.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/order/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/order/checkout.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/order/order-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/order/order-details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/order/order-placed.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/order/order-placed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eshop/templates/order/view-orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/eshop/templates/order/view-orders.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,16 +35,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/E-shop&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/E-shop",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
