@@ -14,7 +14,6 @@ import pyotp
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
-from django.utils import timezone
 import datetime
 
 from django.views.decorators.cache import cache_control
@@ -43,10 +42,9 @@ def signup(request):
         my_user = User.objects.create_user(username, email, password2)
         my_user.is_active = False
         my_user.save()
-        messages.success(request,
-                         "Your Account has been Sucessfully created.Please verifiy your email in order to activate your account")
+        messages.success(request, "Your Account has been Sucessfully created.Please verifiy your email in order to activate your account")
 
-        # senting email to user
+        # sending email to user
         subject = "welcome to eshop-commerce"
         message = "Hello" + ' ' + my_user.username + " !!\n" + "Welcome to eshop \nThank you for visiting website\nwe have also sent you a conforamition email, please confirm your email adress in order to activate your account \n \nThank You"
         from_email = settings.EMAIL_HOST_USER
@@ -54,7 +52,7 @@ def signup(request):
         send_mail(subject, message, from_email, to_list, fail_silently=True)
         print(send_mail)
 
-        # senting activation link through mail
+        # sending activation link through mail
         current_site = get_current_site(request)
         subject = 'Activate Your Eshop Account'
         message = render_to_string('accounts/confirmEmail.html', {

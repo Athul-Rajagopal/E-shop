@@ -9,9 +9,6 @@ Shop
                         <i class="fa fa-user" aria-hidden="true" style="color: #F1B709;"></i>
                         <span class="badge">{{user}}</span>
 
-
-
-                        <!-- <i class="fas fa-shopping-cart text-primary"></i> -->
                     </a>
 {% endif %}
 
@@ -41,7 +38,6 @@ Shop
                     {% endfor %}
                   </div>
                 </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
               </div>
               {% if user.is_authenticated %}
               <div class="navbar-nav ml-auto py-0">
@@ -61,23 +57,9 @@ Shop
                     <div class="carousel-inner">
                         <div class="carousel-item active" style="height: 410px;">
                             <img class="img-fluid" src="{% static 'image/carousal2.jpg' %}" alt="Image">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-<!--                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>-->
-<!--                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">COUPLE WATCHES</h3>-->
-<!--                                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>-->
-                                </div>
-                            </div>
                         </div>
                         <div class="carousel-item" style="height: 410px;">
                             <img class="img-fluid" src="{% static 'image/carousal3.webp' %}" alt="Image">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                                <div class="p-3" style="max-width: 700px;">
-<!--                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>-->
-<!--                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>-->
-<!--                                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>-->
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
@@ -99,11 +81,11 @@ Shop
 <!-- Shop Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
-        <!-- Shop Sidebar Start -->
+        <!-- Shop Sidebar Start  desktop view-->
         <div class="col-lg-3 col-md-12">
 
             <!-- Filter Start -->
-            <div class="mb-5">
+            <div class="mb-5 d-none d-md-block">
                 <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
                 <form id="filterForm">
                     <div class="form-row">
@@ -131,18 +113,53 @@ Shop
                     <button type="submit" class="btn btn-primary">Apply Filters</button>
                 </form>
             </div>
-            <!-- Filter End -->
 
+<!--     sidebar for mobile view-->
+        <div class="container d-md-none">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Filter
+            </button>
+
+            <div class="dropdown-menu w-100" aria-labelledby="filterDropdown" >
+                <div class="filter-box p-3 border">
+                <form id="filterFormMobile">
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="number" class="form-control" id="minPriceInputMobile" name="min_price" placeholder="Min Price">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" id="maxPriceInputMobile" name="max_price" placeholder="Max Price">
+                        </div>
+                    </div>
+                    <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
+                    {% for size in size %}
+                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                        <input type="checkbox" class="custom-control-input" id="sizeMobile-{{ forloop.counter }}" name="size" value="{{ size.size }}">
+                        <label class="custom-control-label" for="sizeMobile-{{ forloop.counter }}">{{size.size}}</label>
+                    </div>
+                    {% endfor %}
+                    <h5 class="font-weight-semi-bold mb-4">Filter by Brand</h5>
+                    {% for brand in brands %}
+                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                        <input type="checkbox" class="custom-control-input" id="brandMobile-{{ forloop.counter }}" name="brand" value="{{ brand.name }}" >
+                        <label class="custom-control-label" for="brandMobile-{{ forloop.counter }}">{{brand.name}}</label>
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </form>
+            </div>
         </div>
-        <!-- Shop Sidebar End -->
+    </div>
+    </div>
+    </div>
+          <!-- Filter End -->
+<!-- Shop Sidebar End -->
  <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-12">
             <div class="row pb-3">
                 <div class="col-12 pb-1">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
 
-
-                    </div>
                 </div>
                 <!-- test -->
                 <div class="row px-xl-5 pb-3">
@@ -246,6 +263,28 @@ $(document).ready(function() {
         // Get the selected brand values from checkboxes
         const selectedBrands = [];
         $(".brand-checkbox:checked").each(function() {
+            selectedBrands.push($(this).val());
+        });
+
+        const minPrice = $("#minPriceInput").val();
+        const maxPrice = $("#maxPriceInput").val();
+    });
+});
+</script>
+<script>
+$(document).ready(function() {
+    $("#filterFormMobile").submit(function(event) {
+        event.preventDefault();
+
+        // Get the selected size values from checkboxes
+        const selectedSizes = [];
+        $(".sizeMobile-checkbox:checked").each(function() {
+            selectedSizes.push($(this).val());
+        });
+
+        // Get the selected brand values from checkboxes
+        const selectedBrands = [];
+        $(".brandMobile-checkbox:checked").each(function() {
             selectedBrands.push($(this).val());
         });
 

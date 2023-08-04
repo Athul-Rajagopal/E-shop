@@ -38,10 +38,6 @@ def shop(request, slug):
     brand_filter = request.GET.getlist('brand')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    print(size_filter)
-    print(brand_filter)
-    print(min_price, max_price)
-    print(products)
 
     if brand_filter:
         products = products.filter(brandName__name__in=brand_filter,category=category_id)

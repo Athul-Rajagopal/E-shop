@@ -165,7 +165,7 @@ def download_sales_report(request):
     order_count_month = month_orders.count()
     total_price_month = month_orders.aggregate(Sum('total_price'))['total_price__sum']
 
-    # Top selling products
+    # Top-selling products
     top_selling_products_today = OrderItem.objects.values('product__product__name').annotate(
         total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
     top_selling_products_week = OrderItem.objects.filter(order_id__order_date__date__range=[week_ago, today]).values(
@@ -203,7 +203,7 @@ def download_sales_report(request):
     return response
 
 
-def userdetails(request):
+def user_details(request):
     users = User.objects.all()
     context = {
         'users': users
@@ -530,7 +530,6 @@ def change_status(request, order_id):
         order = Order.objects.get(id=order_id)
         if request.method == 'POST':
             status = request.POST['status']
-            print('%%%%%%%%%%%%%%%', status)
             order.payment_status = str(status)
             order.save()
 
@@ -635,13 +634,9 @@ def user_order_returned(request, order_id):
             get_wallet.wallet_amount = get_wallet.wallet_amount + Decimal(str(order.total_price))
             get_wallet.save()
             order.delete()
-            # order.payment_status = 'RETURNED'
-            # order.save()
         except ObjectDoesNotExist:
             user_wallet = UserWallet.objects.create(user=user, wallet_amount=order.total_price)
             user_wallet.save()
-            # order.payment_status = 'RETURNED'
-            # order.save()
 
         return redirect('orders')
 

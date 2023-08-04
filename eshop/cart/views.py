@@ -28,16 +28,13 @@ def cart(request):
             total_price = sum(cart_item.price for cart_item in cart_item)
             user_cart.total_price = total_price
             user_cart.save()
-        # user_cart = Cart.objects.get(user=request.user)
-        # items = user_cart.cartitem_set.all
+
 
         context = {
             'cart': cart_item,
             'user_cart': user_cart,
             'categories': categories,
             'total_price': total_price,
-            # 'coupons': coupons
-
         }
         return render(request, 'cart/cart.html', context)
     else:
@@ -162,28 +159,20 @@ def apply_coupon(request):
         cart_items = CartItem.objects.filter(cart=cart)
 
         total_price = sum(cart_item.price for cart_item in cart_items)
-        print("###########################")
         if request.method == 'POST':
             coupon_code = request.POST.get('coupon')
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$', coupon_code)
             try:
-                print("^^^^^^^^^^^^^^^^^^^^^^^^")
+
                 coupon = Coupon.objects.get(coupon_code=coupon_code, is_expired=False, minimum_amount__lte=total_price)
-                print("^^^^^^^^^^^^^^^^^^^^^", coupon.id)
-                print("^^^^^^^^^^^^^^^^^^^^^", coupon.discount_price)
+
                 # Add a new condition to check if the user has already applied the coupon
                 user_coupon = UserCoupon.objects.filter(user=request.user, coupon=coupon.id).first()
-                print(user_coupon)
+
                 if user_coupon is None:
                     # User has not already applied the coupon
                     cart.coupon = coupon.id
-                    # cart.save()
-                    # print("#############################",cart.coupon)
                     total_price -= coupon.discount_price
                     cart.total_price = total_price
-                    print("total_....................................price")
-
-                    print(total_price)
                     cart.save()
 
                 else:
