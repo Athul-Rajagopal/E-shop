@@ -59,7 +59,7 @@ def add_address(request):
 
 def checkout(request, address_id):
     cart = Cart.objects.get(user=request.user)
-    user_wallet = UserWallet.objects.get(user=request.user)
+    user_wallet, _ = UserWallet.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)
     if cart_items:
         if request.user.is_authenticated:

@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-8=+&n91laeg_rlp2&!y0f^wh6@%05oy2@m@y$5l=o3xhgw=+p%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['65.2.171.55', '0.0.0.0']
 
 # Application definition
 
@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CSRF_TRUSTED_ORIGINS = ['http://65.2.171.55']
 
 ROOT_URLCONF = 'eshop.urls'
 
@@ -79,11 +80,11 @@ WSGI_APPLICATION = 'eshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+# 'NAME': 'my-db'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'my-db',
+        'NAME': 'my_db',
         'USER': 'postgres',
         'PASSWORD': '47619',
         'HOST': 'localhost',

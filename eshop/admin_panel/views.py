@@ -315,7 +315,7 @@ def add_product(request):
             price = request.POST['price']
 
             stock = request.POST['stock']
-            variant_image = request.FILES.get['variant_image']
+            variant_image = request.FILES.get('variant_image')
             variant_images = request.FILES.getlist('variant_images')
 
             category_id = CategoryTable.objects.get(id=category)
@@ -392,7 +392,7 @@ def add_variant(request, product_id):
             stock = request.POST['stock']
             size = request.POST['size']
             price = request.POST['price']
-            variant_image = request.FILES['variant_image']
+            variant_image = request.FILES.get('variant_image')
             variant_images = request.FILES.getlist('variant_images')
             product = ProductTable.objects.get(id=product_id)
             size_id = Size.objects.get(id=size)
